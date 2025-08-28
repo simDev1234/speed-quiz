@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+    <!-- Header -->
+    <header class="header" th:fragment="header">
+        <div class="header-container">
+            <a href="/" class="header-logo">
+                <span>🎯</span>
+                퀴즈 게임
+            </a>
+
+            <div class="user-menu">
+                <p th:if="${isLoggedIn}">안녕하세요, <span th:text="${nickname}">닉네임</span>님</p>
+                <button class="logout-btn" onclick="logout()" th:if="${isLoggedIn}">로그아웃</button>
+                <a href="/login" class="logout-btn" th:unless="${isLoggedIn}">로그인</a>
+            </div>
+        </div>
+    </header>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>퀴즈 게임 - 랭킹</title>
+    <link rel = "stylesheet" th:href ="@{/css/common.css}">
+    <link rel = "stylesheet" th:href ="@{/css/header.css}">
+    <link rel = "stylesheet" th:href ="@{/css/footer.css}">
+    <link rel = "stylesheet" th:href ="@{/css/sidebar.css}">
+    <link rel = "stylesheet" th:href ="@{/css/ranking.css}">
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="fragments/header ::header"></div>
+    <div class="container">
+        <!-- 사이드바 -->
+        <div th:replace="fragments/sidebar ::sidebar">
+            <div th:replace="fragments/title :: title"></div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div th:fragment="mainContent" class = "main-content">
+            <!-- 헤더 -->
+            <div class="header">
+                <div class="page-title">
+                    🏆 오늘의 랭킹
+                </div>
+            </div>
+
+            <!-- 랭킹 컨테이너 -->
+            <div class="ranking-container">
+                <!-- 통계 요약 -->
+                <div class="stats-summary" id="statsSummary">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUsers">-</div>
+                        <div class="stat-label">총 참가자</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avgScore">-</div>
+                        <div class="stat-label">평균 점수</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalQuizzes">-</div>
+                        <div class="stat-label">총 퀴즈 수</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="myRank">-</div>
+                        <div class="stat-label">내 순위</div>
+                    </div>
+                </div>
+
+                <!-- 랭킹 리스트 -->
+                <div class="ranking-list">
+                    <div class="ranking-header">
+                        <div>순위</div>
+                        <div>닉네임</div>
+                        <div>맞춘 갯수</div>
+                        <div>풀이 횟수</div>
+                    </div>
+                    <div id="rankingList">
+                        <div th:if="${rankingList == null or #lists.isEmpty(rankingList)}"  class="loading">
+                            랭킹 정보가 없습니다.
+                        </div>
+                        <div th:if="${rankingList != null and !#lists.isEmpty(rankingList)}" >
+                            <div th:each="rank : ${rankingList}">
+                                <div class="ranking-item">
+                                    <div th:text="${rank.rankNumber}" class="rank-number">1</div>
+                                    <div th:text="${rank.userInfo}" class="user-info">홍길동</div>
+                                    <div th:text="${rank.correctCount}" class="correct-count">10</div>
+                                    <div th:text="${rank.totalCount}" class="total-count">1</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 푸터 -->
+    <div th:replace="fragments/footer ::footer"></div>
+    <script th:src="@{/js/sidebar.js}"></script>
+</body>
+</html>

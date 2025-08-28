@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>로그인 & 회원가입</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel = "stylesheet" th:href ="@{/css/common.css}">
+    <link rel = "stylesheet" th:href ="@{/css/header.css}">
+    <link rel = "stylesheet" th:href ="@{/css/footer.css}">
+    <link rel = "stylesheet" th:href ="@{/css/login.css}">
+    <link rel="canonical" href="https://www.creative-tim.com/twcomponents/component/notification-toast" itemprop="URL">
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="fragments/header ::header"></div>
+    <!-- 로그인/회원가입 영역  -->
+    <div class = "box-container">
+        <div class="login-container">
+            <div class="tab-container">
+                <div class="tab active" onclick="showSection(event, 'login')">로그인</div>
+                <div class="tab" onclick="showSection(event, 'signup')">회원가입</div>
+            </div>
+
+            <!-- 로그인 섹션 -->
+            <div id="login" class="form-section active">
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                    <div class="form-group">
+                        <label for="loginEmail" class="block text-sm font-medium text-gray-700">이메일</label>
+                        <input type="email" id="loginEmail" name="loginEmail" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 sm:text-sm px-3 py-2">
+                    </div>
+                    <div class="form-group relative">
+                        <label for="loginPassword" class="block text-sm font-medium text-gray-700">비밀번호</label>
+                        <input type="password" id="loginPassword" name="loginPassword" required
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 sm:text-sm px-3 py-2 pr-10">
+                        <span class="absolute right-3 top-9 cursor-pointer text-gray-500" onclick="togglePasswordVisibility('loginPassword', this)">👁️</span>
+                    </div>
+                    <div class="form-group flex items-center">
+                        <input type="checkbox" id="loginProlonging" name="remember-me"
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="loginProlonging" class="ml-2 block text-sm text-gray-900">로그인 유지</label>
+                    </div>
+                    <button type="submit"
+                            class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow hover:bg-blue-600 transition">
+                        로그인
+                    </button>
+                </form>
+                <div class="login-fail-alert-container mt-4" id="loginFailAlert" th:if="${errorMessage}">
+                    <button class="login-fail-alert-close float-right text-gray-500 hover:text-gray-700" id="loginFailClose" aria-label="닫기">&times;</button>
+                    <div class="login-fail-alert-message text-red-500 text-sm mt-2" th:text="${errorMessage}">
+                        여기에 에러 메시지가 작성됩니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 회원가입 섹션 -->
+            <div id="signup" class="form-section">
+                <div class="step-indicator">
+                    <div class="step active" id="step1">1</div>
+                    <div class="step" id="step2">2</div>
+                    <div class="step" id="step3">3</div>
+                </div>
+
+                <!-- 1단계: 이메일 인증 -->
+                <div id="emailVerification" class="step-content active">
+                    <form onsubmit="sendVerificationCode(event)" class="space-y-4">
+                        <div class="form-group">
+                            <label for="signupEmail" class="block text-sm font-medium text-gray-700">이메일 주소</label>
+                            <input type="email" id="signupEmail" required
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 sm:text-sm px-3 py-2">
+                            <span id="emailError" class="text-red-500 text-sm mt-1 block"></span>
+                        </div>
+                        <button type="submit"
+                                class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow hover:bg-blue-600 transition">
+                            인증 코드 발송
+                        </button>
+                    </form>
+
+                    <div id="verificationSection" class="mt-4" style="display: none;">
+                        <form onsubmit="verifyCode(event)" class="space-y-4">
+                            <div class="form-group">
+                                <label for="codeInput" class="block text-sm font-medium text-gray-700">인증 코드 입력</label>
+                                <input type="text" id="codeInput" maxlength="6" required
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 sm:text-sm px-3 py-2">
+                                <span id="codeError" class="text-red-500 text-sm mt-1 block"></span>
+                            </div>
+                            <button type="submit"
+                                    class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow hover:bg-blue-600 transition">
+                                인증 확인
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 2단계: 비밀번호, 닉네임 -->
+                <div id="userInfo" class="step-content">
+                    <form onsubmit="completeSignup(event)" class="space-y-4">
+                        <div class="form-group relative">
+                            <label for="signupPassword" class="block text-sm font-medium text-gray-700">비밀번호</label>
+                            <input type="password" id="signupPassword" required oninput="checkPassword()"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 sm:text-sm px-3 py-2 pr-10">
+                            <span class="absolute right-3 top-9 cursor-pointer text-gray-500" onclick="togglePasswordVisibility('signupPassword', this)">👁️</span>
+                            <div class="password-requirements mt-2 space-y-1 text-xs text-gray-600">
+                                <div class="requirement" id="lengthReq">최소 8자 이상</div>
+                                <div class="requirement" id="upperReq">대문자 포함</div>
+                                <div class="requirement" id="lowerReq">소문자 포함</div>
+                                <div class="requirement" id="numberReq">숫자 포함</div>
+                                <div class="requirement" id="specialReq">특수문자 포함</div>
+                            </div>
+                        </div>
+                        <div class="form-group relative">
+                            <label for="confirmPassword" class="block text-sm font-medium text-gray-700">비밀번호 확인</label>
+                            <input type="password" id="confirmPassword" required oninput="checkPasswordMatch()"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 sm:text-sm px-3 py-2 pr-10">
+                            <span class="absolute right-3 top-9 cursor-pointer text-gray-500" onclick="togglePasswordVisibility('confirmPassword', this)">👁️</span>
+                            <span id="passwordError" class="text-red-500 text-sm mt-1 block"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="nickname" class="block text-sm font-medium text-gray-700">닉네임</label>
+                            <input type="text" id="nickname" required
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 sm:text-sm px-3 py-2">
+                        </div>
+                        <button type="submit" id="signupBtn" disabled
+                                class="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-md shadow hover:bg-blue-600 transition">
+                            가입 완료
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 3단계: 완료 -->
+                <div id="signupComplete" class="step-content">
+                    <div style="text-align: center; padding: 40px 0;">
+                        <div style="font-size: 60px; color: #27ae60; margin-bottom: 20px;">✓</div>
+                        <h2>가입 완료!</h2>
+                        <p>회원가입이 성공적으로 완료되었습니다.</p>
+                        <button class="btn btn-primary" onclick="showSection(event, 'login')">로그인하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 푸터 -->
+    <div th:replace="fragments/footer ::footer"></div>
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/login.js}"></script>
+    <script th:src="@{/js/email-auth.js}"></script>
+    <script th:src="@{/js/signup.js}"></script>
+    <script>
+        let currentStep = 1;
+        let verifiedEmail = '';
+
+        function showSection(event, sectionId) {
+            console.log('섹션 변경:', sectionId);
+
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            if (event?.target) event.target.classList.add('active');
+
+            document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            if (sectionId === 'signup') resetSignup();
+        }
+
+        function resetSignup() {
+            currentStep = 1;
+            updateStepIndicator();
+            showStep(1);
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('verificationSection').style.display = 'none';
+        }
+
+        function updateStepIndicator() {
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById(`step${i}`);
+                step.className = 'step';
+                if (i < currentStep) step.classList.add('completed');
+                else if (i === currentStep) step.classList.add('active');
+            }
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            const stepIds = ['emailVerification', 'userInfo', 'signupComplete'];
+            document.getElementById(stepIds[step - 1]).classList.add('active');
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('signupPassword').value;
+            const requirements = {
+                lengthReq: password.length >= 8,
+                upperReq: /[A-Z]/.test(password),
+                lowerReq: /[a-z]/.test(password),
+                numberReq: /\d/.test(password),
+                specialReq: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+            for (let id in requirements) {
+                document.getElementById(id).classList.toggle('valid', requirements[id]);
+            }
+            checkPasswordMatch();
+            updateSignupButton();
+        }
+
+        function checkPasswordMatch() {
+            const pw = document.getElementById('signupPassword').value;
+            const cpw = document.getElementById('confirmPassword').value;
+            document.getElementById('passwordError').textContent = (pw && cpw && pw !== cpw) ? '비밀번호가 일치하지 않습니다.' : '';
+            updateSignupButton();
+        }
+
+        function updateSignupButton() {
+            const pw = document.getElementById('signupPassword').value;
+            const cpw = document.getElementById('confirmPassword').value;
+            const nickname = document.getElementById('nickname').value.trim();
+            const validPw = pw.length >= 8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /\d/.test(pw) && /[!@#$%^&*(),.?":{}|<>]/.test(pw);
+            const isValid = validPw && pw === cpw && nickname;
+            document.getElementById('signupBtn').disabled = !isValid;
+        }
+
+        // DOMContentLoaded 이벤트 처리 개선
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log('인라인 스크립트 - DOM 로드 완료');
+
+            // 닉네임 입력 이벤트 리스너
+            const nicknameInput = document.getElementById('nickname');
+            if (nicknameInput) {
+                nicknameInput.addEventListener('input', updateSignupButton);
+            }
+
+            // 로그인 실패 알림 닫기
+            const closeBtn = document.getElementById("loginFailClose");
+            const alertBox = document.getElementById("loginFailAlert");
+
+            if (closeBtn && alertBox) {
+                closeBtn.addEventListener("click", function() {
+                    alertBox.style.opacity = "0";
+                    alertBox.style.transform = "translate(-50%, -60%)";
+                    setTimeout(() => {
+                        alertBox.style.display = "none";
+                    }, 300);
+                });
+            }
+
+            // 로그인 폼 유효성 검사
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                console.log('로그인 폼 발견, 이벤트 리스너 확인 중...');
+
+                // 폼 제출 이벤트가 제대로 바인딩 되었는지 확인
+                loginForm.addEventListener('submit', function(e) {
+                    console.log('폼 제출 이벤트 감지됨');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

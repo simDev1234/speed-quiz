@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>퀴즈 게임 - 퀴즈</title>
+    <link rel = "stylesheet" th:href ="@{/css/common.css}">
+    <link rel = "stylesheet" th:href ="@{/css/header.css}">
+    <link rel = "stylesheet" th:href ="@{/css/footer.css}">
+    <link rel = "stylesheet" th:href ="@{/css/sidebar.css}">
+    <link rel = "stylesheet" th:href ="@{/css/quiz.css}">
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="fragments/header ::header"></div>
+    <div class="container">
+        <!-- 사이드바 -->
+        <div th:replace="fragments/sidebar ::sidebar">
+            <div th:replace="fragments/title :: title"></div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div th:fragment="mainContent" class="main-content">
+            <div class="box-container">
+                <div class="quiz-header">
+                    <div class="quiz-info">
+                        <div class="info-item">
+                            <div id = "infoNumber" class="info-number">1</div>
+                            <div id = "infoSubject" class="info-subject">[과목]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="time-section">
+                        <div class="time-bar">
+                            <div class="time-fill" id="timeFill"></div>
+                        </div>
+                        <div class="time-indicator" id="timeIndicator">5초</div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-box">
+                            <div class="question-number" id="questionNumber">문제 1/10</div>
+                            <div class="question-text" id="questionText">질문 텍스트</div>
+                        </div>
+
+                        <div class="answers-grid" id="answersGrid">
+                            <!-- 보기 버튼들이 동적으로 생성됨 -->
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="submitBtn" class="nav-btn hidden" onclick="submitAnswer()">제출</button>
+                        <button id="nextBtn" class="next-btn hidden" onclick="goToNext()">다음</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- 푸터 -->
+    <div th:replace="fragments/footer ::footer"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/sidebar.js}"></script>
+    <script th:src="@{/js/quiz.js}"></script>
+    <script th:src="@{/js/signout.js}"></script>
+    <script th:inline="javascript">
+        const questions = /*[[${questions}]]*/ []
+        let currentQuestionIndex = 0;
+        let selectedChoiceId = null;
+        let timeLeft = 5;
+        let totalTime = 5;
+        let timerInterval;
+        let isTimeUp = false;
+        const userAnswers = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            renderQuestion();
+        })
+    </script>
+</body>
+</html>

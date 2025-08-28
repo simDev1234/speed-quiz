@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 인증 코드</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .quiz-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .verification-code {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            padding: 20px 40px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 20px 0;
+            letter-spacing: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .expire-notice {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .warning {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .company-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .company-info p {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 5px;
+            }
+
+            .quiz-header, .content, .footer {
+                padding: 20px;
+            }
+
+            .verification-code {
+                font-size: 24px;
+                padding: 15px 25px;
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Coolschool</h1>
+    </div>
+
+    <div class="content">
+        <div class="greeting">
+            <span>고객님</span>, 안녕하세요!
+        </div>
+
+        <div class="message">
+            계정 인증을 위해 아래의 인증 코드를 입력해주세요.<br>
+            인증 코드는 보안을 위해 <strong th:text="${expirationMinutes ?: '10'}">10</strong>분 후에 만료됩니다.
+        </div>
+
+        <div class="verification-code" th:text="${verificationCode}">123456</div>
+
+        <div class="expire-notice">
+            ⏰ 이 인증 코드는
+            <span th:text="${#temporals.format(expirationTime, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</span>
+            까지 유효합니다.
+        </div>
+
+        <div class="warning">
+            ⚠️ 본인이 요청하지 않은 인증 코드라면 이 이메일을 무시하고 즉시 고객센터로 연락해주세요.
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>본 메일은 발신 전용입니다. 문의사항이 있으시면 고객센터로 연락해주세요.</p>
+
+        <div class="company-info">
+            <p>
+                고객센터: <span>1600-1354</span> |
+                이메일: <span>cs@coolschool.co.kr</span>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

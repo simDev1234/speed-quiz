@@ -1,0 +1,357 @@
+.box-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height:700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    transition: all 0.3s ease;
+}
+
+.login-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+.tab-container {
+    display: flex;
+    margin-bottom: 30px;
+    background: #f8f9ff;
+    border-radius: 15px;
+    padding: 5px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #666;
+    /* 모바일 터치 개선 */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.tab.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: scale(1.02);
+}
+
+.form-section {
+    display: none;
+    position: relative;
+}
+
+.form-section.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    /* 모바일 터치 개선 - 핵심 추가사항 */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.error {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e1e8ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #999;
+    position: relative;
+}
+
+.step.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    width: calc(100% + 10px);
+    height: 2px;
+    background: #e1e8ed;
+    transform: translateY(-50%);
+}
+
+.password-requirements {
+    background: #f8f9ff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.requirement {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+}
+
+.requirement::before {
+    content: '✗';
+    color: #e74c3c;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.requirement.valid::before {
+    content: '✓';
+    color: #27ae60;
+}
+
+.verification-code {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9ff;
+    border-radius: 15px;
+    margin: 20px 0;
+}
+
+.code-display {
+    font-size: 24px;
+    font-weight: bold;
+    color: #667eea;
+    letter-spacing: 5px;
+    margin: 10px 0;
+}
+
+.step-content {
+    display: none;
+}
+
+.step-content.active {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.login-prolonging-group{
+    text-align: left;
+}
+
+.login-prolonging-group > label {
+    display: inline;
+}
+
+#loginProlonging {
+    width:20px;
+}
+
+.login-fail-alert-container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    min-height: 150px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.login-fail-alert-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+    border: none;
+    color: #888;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-align: center;
+    /* 모바일 터치 개선 */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.login-fail-alert-close:hover {
+    background-color: #eee;
+    color: #111;
+}
+
+.login-fail-alert-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+    word-break: keep-all;
+    padding: 0 1rem;
+}
+
+/* 비밀번호 토글 버튼 스타일 */
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-container input {
+    padding-right: 45px;
+    width: 100%;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 18px;
+    color: #666;
+    z-index: 1;
+    /* 모바일 터치 개선 */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.password-toggle:hover {
+    color: #333;
+}
+
+/* 모바일에서만 적용되는 최소한의 개선 */
+@media screen and (max-width: 768px) {
+    input {
+        font-size: 16px; /* iOS 줌 방지 */
+    }
+
+    .btn {
+        min-height: 48px; /* 터치하기 쉬운 크기 */
+    }
+
+    .login-fail-alert-container {
+        width: 90%;
+        max-width: 320px;
+    }
+
+    .password-toggle {
+        font-size: 20px;
+        padding: 8px;
+        margin-right: -8px;
+        min-height: 36px;
+        min-width: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

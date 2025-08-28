@@ -1,0 +1,123 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'me.champeau.jmh' version '0.7.1'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    asciidoctorExt
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot:3.0.5'
+
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'org.webjars.npm:jsonwebtoken:8.5.1'
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
+
+    implementation 'org.openjdk.jmh:jmh-core:1.37'
+    implementation 'org.openjdk.jmh:jmh-generator-annprocess:1.37'
+    annotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.37'
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Spring REST Docs 의존성
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+}
+
+// 테스트 전에 기존 문서 삭제
+tasks.named('testClasses') {
+    doFirst {
+        delete file('build/docs/asciidoc')
+    }
+}
+
+// 테스트 설정
+tasks.named('test') {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
+    finalizedBy asciidoctor
+}
+
+// AsciiDoctor 설정
+tasks.named('asciidoctor') {
+    dependsOn test
+    configurations 'asciidoctorExt'
+    inputs.dir snippetsDir
+    finalizedBy copyDocument
+
+    // 기존 문서 삭제
+    doFirst {
+        delete file('src/main/resources/static/docs')
+    }
+
+    // 스니펫 디렉토리 설정
+    attributes 'snippets': snippetsDir
+}
+
+// 생성된 문서를 static 폴더로 복사
+tasks.register('copyDocument', Copy) {
+    dependsOn asciidoctor
+    from file('build/docs/asciidoc')
+    into file('src/main/resources/static/docs')
+}
+
+// JAR 빌드 시 문서 포함
+bootJar {
+    dependsOn asciidoctor
+    doFirst {
+        delete file('static/docs')
+    }
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
+}
+
+jmh {
+    resultFormat = 'JSON'
+    resultsFile = file('/benchmark-results.json')
+}

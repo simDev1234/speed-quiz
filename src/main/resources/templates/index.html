@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 게임 - 메인</title>
+    <link rel = "stylesheet" th:href ="@{/css/common.css}">
+    <link rel = "stylesheet" th:href ="@{/css/header.css}">
+    <link rel = "stylesheet" th:href ="@{/css/footer.css}">
+    <link rel = "stylesheet" th:href ="@{/css/sidebar.css}">
+    <link rel = "stylesheet" th:href ="@{/css/main.css}">
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="fragments/header ::header"></div>
+    <div class="container">
+        <!-- 사이드바 -->
+        <div th:replace="fragments/sidebar ::sidebar">
+            <div th:replace="fragments/title :: title"></div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div th:fragment="mainContent" class = "main-content">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-title">퀴즈 시작하기</div>
+                    <div class="card-description">다양한 주제의 퀴즈로 지식을 테스트해보세요</div>
+                    <a href="/quiz" class="start-btn">시작하기</a>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🏆</div>
+                    <div class="card-title">랭킹 확인</div>
+                    <div class="card-description">다른 사용자들과 점수를 비교해보세요</div>
+                    <a href="/ranking" class="start-btn">랭킹 보기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 푸터 -->
+    <div th:replace="fragments/footer ::footer"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/sidebar.js}"></script>
+    <script th:src="@{/js/signout.js}"></script>
+</body>
+</html>
