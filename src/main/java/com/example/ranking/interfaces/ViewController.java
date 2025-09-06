@@ -60,6 +60,16 @@ public class ViewController {
         return "result";
     }
 
+    @GetMapping("/quiz/myquiz")
+    public String getMyPage(@AuthenticationPrincipal UserDetails userDetails, Model model){
+
+        model.addAttribute("isLoggedIn", true);
+        model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
+        model.addAttribute("myQuizList", dailyQuizReadService.findAllMyActiveQuizList(userDetails.getUsername()));
+
+        return "myquiz";
+    }
+
     @GetMapping("/quiz-create")
     public String getQuizCreatePage(@AuthenticationPrincipal UserDetails userDetails, Model model){
 

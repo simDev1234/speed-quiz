@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 게임 - 내가 만든 퀴즈</title>
+    <link rel = "stylesheet" th:href ="@{/css/common.css}">
+    <link rel = "stylesheet" th:href ="@{/css/header.css}">
+    <link rel = "stylesheet" th:href ="@{/css/footer.css}">
+    <link rel = "stylesheet" th:href ="@{/css/sidebar.css}">
+    <link rel = "stylesheet" th:href ="@{/css/myquiz.css}">
+</head>
+<body>
+<!-- 헤더 -->
+<div th:replace="fragments/header ::header"></div>
+<div class="container">
+    <!-- 사이드바 -->
+    <div th:replace="fragments/sidebar ::sidebar">
+        <div th:replace="fragments/title :: title"></div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div th:fragment="mainContent" class="main-content">
+        <!-- 페이지 헤더 -->
+        <div class="page-header">
+            <h1>내가 만든 퀴즈</h1>
+            <p>내가 생성한 퀴즈들을 관리하고 편집해보세요</p>
+            <a th:href="@{/quiz-create}" class="create-quiz-btn">
+                ➕ 새 퀴즈 만들기
+            </a>
+        </div>
+
+        <!-- 퀴즈 목록 -->
+        <div class="quiz-grid">
+            <!-- 퀴즈가 없을 때 -->
+            <div th:if="${myQuizList == null or #lists.isEmpty(myQuizList)}" class="empty-state">
+                <div class="empty-icon">📝</div>
+                <h3>아직 만든 퀴즈가 없어요</h3>
+                <p>첫 번째 퀴즈를 만들어보세요!</p>
+                <a th:href="@{/quiz-create}" class="create-quiz-btn">퀴즈 만들기</a>
+            </div>
+
+            <!-- 퀴즈 카드들 -->
+            <div class="quiz-card" th:each="quiz : ${myQuizList}">
+                <div class="quiz-card-header">
+                    <div class="quiz-icon">📚</div>
+                    <div class="quiz-actions">
+                        <button class="action-btn edit-btn" th:data-quiz-id="${quiz.questionTitleId}">
+                            ✏️
+                        </button>
+                        <button class="action-btn delete-btn" th:data-quiz-id="${quiz.questionTitleId}">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="quiz-title" th:text="${quiz.titleText}">퀴즈 제목</div>
+                <div class="quiz-description" th:text="${quiz.description}">퀴즈 설명</div>
+
+                <div class="quiz-meta">
+                    <div class="quiz-info">
+                        <span class="info-item">
+                            <span class="info-icon">⏰</span>
+                            <span th:text="${quiz.timeLimit} + '초'">30초</span>
+                        </span>
+                        <span class="info-item">
+                            <span class="info-icon">📅</span>
+                            <span th:text="${#temporals.format(quiz.createdAt, 'yyyy.MM.dd')}">2024.01.15</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="quiz-card-footer">
+                    <a th:href="@{/quiz(questionTitleId=${quiz.questionTitleId})}" class="play-btn">
+                        🎯 플레이하기
+                    </a>
+                    <button class="share-btn" th:data-quiz-id="${quiz.questionTitleId}">
+                        📤 공유하기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 푸터 -->
+<div th:replace="fragments/footer ::footer"></div>
+
+<!-- 삭제 확인 모달 -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h3>퀴즈 삭제</h3>
+        <p>정말로 이 퀴즈를 삭제하시겠습니까?<br>삭제된 퀴즈는 복구할 수 없습니다.</p>
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="closeDeleteModal()">취소</button>
+            <button class="btn-delete" onclick="confirmDelete()">삭제</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/signout.js}"></script>
+<script th:src="@{/js/myquiz.js}"></script>
+</body>
+</html>

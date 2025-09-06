@@ -102,6 +102,18 @@ public class DailyQuizReadService {
                 .build();
     }
 
+    public List<QuestionTitle> findAllMyActiveQuizList(String email) {
+
+        UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
+
+        return questionsTitlesJpaRepository.findAllByStatusAndUser(QuestionTitleStatus.ACTIVE, usersEntity)
+                .stream()
+                .map(QuestionTitle::fromEntity)
+                .toList();
+
+    }
+
 
     public List<Subject> findAllSubjects() {
         return subjectsJpaRepository.findAllByStatus(SubjectStatus.ACTIVE)
@@ -109,4 +121,6 @@ public class DailyQuizReadService {
                 .map(Subject::fromEntity)
                 .toList();
     }
+
+
 }
