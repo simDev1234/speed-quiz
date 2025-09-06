@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>퀴즈 게임 - 퀴즈 생성</title>
+    <link rel = "stylesheet" th:href ="@{/css/common.css}">
+    <link rel = "stylesheet" th:href ="@{/css/header.css}">
+    <link rel = "stylesheet" th:href ="@{/css/footer.css}">
+    <link rel = "stylesheet" th:href ="@{/css/sidebar.css}">
+    <link rel = "stylesheet" th:href ="@{/css/quiz-create.css}">
+</head>
+<body>
+    <!-- 헤더 -->
+    <div th:replace="fragments/header ::header"></div>
+    <div class="container">
+        <!-- 사이드바 -->
+        <div th:replace="fragments/sidebar ::sidebar">
+            <div th:replace="fragments/title :: title"></div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div th:fragment="mainContent" class="main-content">
+            <div class="create-header">
+                <h1>새로운 퀴즈 만들기</h1>
+                <p>나만의 퀴즈를 생성하여 친구들과 함께 도전해보세요!</p>
+            </div>
+
+            <div class="create-container">
+                <form id="quizCreateForm">
+                    <!-- 기본 정보 섹션 -->
+                    <div class="form-section">
+                        <h2><span class="section-icon">📋</span>기본 정보</h2>
+
+                        <div class="form-group">
+                            <label class="form-label" for="quizTitle">퀴즈 제목*</label>
+                            <input type="text" id="quizTitle" class="form-input" placeholder="퀴즈 제목을 입력하세요" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="quizDescription">퀴즈 설명</label>
+                            <input type="text" id="quizDescription" class="form-input" placeholder="퀴즈에 대한 간단한 설명을 작성하세요">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="quizSubject">과목</label>
+                            <select id="quizSubject" class="form-select">
+                                <option value="" disabled selected>과목을 선택하세요</option>
+                                <option th:each="subject : ${subjects}"
+                                        th:value="${subject.subjectId}"
+                                        th:text="${subject.subjectName}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="timeLimit">문제당 제한시간 (초)</label>
+                            <select id="timeLimit" class="form-select">
+                                <option value="5" selected>5초</option>
+                                <option value="10">10초</option>
+                                <option value="15">15초</option>
+                                <option value="20">20초</option>
+                                <option value="30">30초</option>
+                                <option value="60">60초</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 문제 섹션 -->
+                    <div class="form-section">
+                        <h2><span class="section-icon">❓</span>문제 목록</h2>
+
+                        <div id="questionsContainer" class="questions-container">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📝</div>
+                                <p>아직 문제가 없습니다.<br>아래 버튼을 클릭하여 첫 번째 문제를 추가해보세요!</p>
+                            </div>
+                        </div>
+
+                        <button type="button" id="addQuestionBtn" class="add-question-btn">
+                            ➕ 새 문제 추가
+                        </button>
+                    </div>
+
+                    <!-- 액션 버튼 -->
+                    <div class="action-buttons">
+                        <button type="submit" class="btn-primary">💾 퀴즈 저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <div th:replace="fragments/footer ::footer"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/sidebar.js}"></script>
+    <script th:src="@{/js/signout.js}"></script>
+    <script th:src="@{/js/quiz-create.js}"></script>
+</body>
+</html>

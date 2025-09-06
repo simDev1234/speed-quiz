@@ -40,18 +40,18 @@ public class JwtTokenProvider {
     }
 
     // 쿠키에 토큰 정보를 저장
-    public JwtAccessToken saveAccessTokenToHttpOnlyCookie(UserDetails userDetails, HttpServletResponse response) {
+    public void saveAccessTokenToHttpOnlyCookie(UserDetails userDetails, HttpServletResponse response) {
         if (!(userDetails instanceof UserAuthDetails)) {
             throw new RuntimeException("=====> TODO");
         }
-        return saveAccessTokenToHttpOnlyCookie(((UserAuthDetails) userDetails).getUser(), response);
+        saveAccessTokenToHttpOnlyCookie(((UserAuthDetails) userDetails).user(), response);
     }
 
-    public JwtAccessToken saveAccessTokenToHttpOnlyCookie(User user, HttpServletResponse response){
-        return saveAccessTokenToHttpOnlyCookie(user.userId(), user.email(), user.nickname(), response);
+    public void saveAccessTokenToHttpOnlyCookie(User user, HttpServletResponse response){
+        saveAccessTokenToHttpOnlyCookie(user.userId(), user.email(), user.nickname(), response);
     }
 
-    public JwtAccessToken saveAccessTokenToHttpOnlyCookie(Long userId, String email, String nickname, HttpServletResponse response){
+    public void saveAccessTokenToHttpOnlyCookie(Long userId, String email, String nickname, HttpServletResponse response){
 
         JwtAccessToken jwtAccessToken = createJwtAccessToken(userId, email,nickname);
 
@@ -62,7 +62,6 @@ public class JwtTokenProvider {
         cookie.setMaxAge((int) (accessTokenExpirationMilliSeconds / 1000)); // seconds
         response.addCookie(cookie);
 
-        return jwtAccessToken;
     }
 
     // 토큰 생성

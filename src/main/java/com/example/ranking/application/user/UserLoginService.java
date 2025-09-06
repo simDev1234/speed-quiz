@@ -1,7 +1,7 @@
 package com.example.ranking.application.user;
 
-import com.example.ranking.infra.auth.jwt.JwtTokenProvider;
 import com.example.ranking.domain.user.request.UserLoginRequest;
+import com.example.ranking.infra.auth.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.stereotype.Service;
+
 import java.util.Objects;
 
 @Service
@@ -31,7 +32,11 @@ public class UserLoginService {
     public void login(UserLoginRequest userLoginRequest, HttpServletRequest request, HttpServletResponse response){
 
         UserDetails userDetails = formUserDetailsService.loadUserByUsername(userLoginRequest.loginEmail());
+
+        log.info("Login User: {}", userDetails.getUsername());
+
         if (!bCryptPasswordEncoder.matches(userLoginRequest.loginPassword(), userDetails.getPassword())) {
+            log.warn("❌ 로그인 실패 - 이메일: {}", userLoginRequest.loginEmail());
             throw new BadCredentialsException("Invalid Password or Non-Existed User Email");
         }
 

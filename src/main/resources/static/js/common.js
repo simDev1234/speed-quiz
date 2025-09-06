@@ -3,7 +3,8 @@
 // =====================
 const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
 const csrfToken = $('meta[name="_csrf"]').attr('content');
-const NGROK_URL = 'https://1dd58f2c7c5c.ngrok-free.app';
+//const NGROK_URL = 'https://1dd58f2c7c5c.ngrok-free.app';
+const NGROK_URL = 'http://localhost:10004';
 
 // =====================
 // 1. 페이지 로드 시 공통 알럿 자동 생성
@@ -13,22 +14,20 @@ const NGROK_URL = 'https://1dd58f2c7c5c.ngrok-free.app';
 
     const container = document.createElement('div');
     container.innerHTML = `
-    <div id="commonAlert" class='hidden fixed top-5 left-1/2 transform -translate-x-1/2 flex items-center text-white max-w-sm w-full bg-red-400 shadow-md rounded-lg overflow-hidden z-50'>
-        <div class='w-10 border-r px-2'>
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                 xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+    <div id="commonAlert" style='position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: none; align-items: center; color: white; max-width: 384px; width: 100%; background-color: #f87171; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 8px; overflow: hidden; z-index: 50;'>
+        <div style='width: 40px; border-right: 1px solid rgba(255, 255, 255, 0.3); padding: 0 8px; display: flex; align-items: center; justify-content: center; height: 100%;'>
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
             </svg>
         </div>
-        <div class='flex items-center px-2 py-3'>
-            <div class='mx-3'>
-                <p id="commonAlertMessage">Your message</p>
+        <div style='display: flex; align-items: center; padding: 8px;'>
+            <div style='margin: 0 12px;'>
+                <p id="commonAlertMessage" style='margin: 0; font-size: 14px;'>Your message</p>
             </div>
         </div>
     </div>
     `;
-    document.body.prepend(container);
+    document.body.append(container);
 })();
 
 // =====================
@@ -39,11 +38,11 @@ function showAlert(message, duration = 3000) {
     const alertMessage = document.getElementById('commonAlertMessage');
 
     alertMessage.textContent = message;
-    alertBox.classList.remove('hidden');
+    alertBox.style.display = 'flex'; // flex로 표시
 
     clearTimeout(alertBox.timeout);
     alertBox.timeout = setTimeout(() => {
-        alertBox.classList.add('hidden');
+        alertBox.style.display = 'none'; // 숨기기
     }, duration);
 }
 

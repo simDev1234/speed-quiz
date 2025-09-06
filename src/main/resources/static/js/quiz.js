@@ -10,7 +10,7 @@ function renderQuestion() {
     selectedChoiceId = null;
 
     const question = questions[currentQuestionIndex];
-    document.getElementById('infoNumber').classList.add(`${question.subject.subjectId}`);
+    document.getElementById('infoNumber').textContent = `[${question.questionTitleId}]`;
     document.getElementById('infoNumber').classList.add('hidden');
     document.getElementById('infoSubject').textContent = `[${question.subject.subjectName}]`;
     document.getElementById('questionNumber').textContent = `문제 ${currentQuestionIndex + 1}/${questions.length}`;
@@ -95,7 +95,10 @@ function handleTimeOut() {
 
 function saveUserAnswer() {
     const question = questions[currentQuestionIndex];
+    const questionTitleId = document.getElementById('infoNumber').textContent.replace(/\[|\]/g, '');
+
     userAnswers.push({
+        questionTitleId : questionTitleId,
         questionId: question.questionId,
         selectedChoiceId: selectedChoiceId ? Number(selectedChoiceId) : null
     });
@@ -145,6 +148,17 @@ function goToNext() {
 
 function submitFinalAnswers() {
 
-    const responseData = sendPost(`${NGROK_URL}/api/v1/quiz/submit`, userAnswers, { credentials: 'include' });
-    location.href = '/quiz/result';
+    const questionTitleId = document.getElementById('infoNumber').textContent.replace(/\[|\]/g, '');
+
+    try {
+        const responseData = sendPost(`${NGROK_URL}/api/v1/quiz/submit`, userAnswers, {
+            credentials: 'include',
+        });
+
+        // 성공 후 이동
+        location.href = '/quiz/result?questionTitleId=' + questionTitleId;
+    } catch (error) {
+        console.error('제출 실패:', error);
+        alert('답안 제출 중 문제가 발생했습니다.');
+    }
 }

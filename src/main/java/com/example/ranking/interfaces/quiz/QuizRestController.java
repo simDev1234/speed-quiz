@@ -1,6 +1,7 @@
 package com.example.ranking.interfaces.quiz;
 
 import com.example.ranking.application.quiz.DailyQuizWriteService;
+import com.example.ranking.domain.quiz.request.QuizCreateRequest.*;
 import com.example.ranking.domain.quiz.request.QuizSubmitRequest.UserAnswerChoice;
 import com.example.ranking.global.exception.HttpApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,16 @@ import java.util.List;
 public class QuizRestController {
 
     private final DailyQuizWriteService dailyQuizWriteService;
+
+    @PostMapping
+    public HttpApiResponse<Void> createQuiz(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody QuizCreate quizCreateRequest){
+
+        dailyQuizWriteService.saveNewQuiz(userDetails.getUsername(), quizCreateRequest);
+
+        return HttpApiResponse.success();
+    }
 
     @PostMapping("/submit")
     public HttpApiResponse<Void> submitQuizAnswers(

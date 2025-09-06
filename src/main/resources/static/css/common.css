@@ -38,6 +38,10 @@ body {
     overflow-y: auto;
 }
 
+.hidden {
+    display: none !important;
+}
+
 /* 📱 모바일 최적화 */
 @media (max-width: 768px) {
     .container {

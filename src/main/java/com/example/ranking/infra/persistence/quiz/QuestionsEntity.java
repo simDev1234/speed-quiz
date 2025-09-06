@@ -1,13 +1,12 @@
 package com.example.ranking.infra.persistence.quiz;
 
+import com.example.ranking.infra.persistence.BasicEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
 import java.util.List;
-
 import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.*;
 
 @Table(name = "questions")
@@ -16,7 +15,7 @@ import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionsEntity {
+public class QuestionsEntity extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +24,10 @@ public class QuestionsEntity {
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private SubjectsEntity subject;
+
+    @ManyToOne
+    @JoinColumn(name = "question_title_id")
+    private QuestionsTitlesEntity questionTitle;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "question_type")
@@ -42,11 +45,5 @@ public class QuestionsEntity {
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<QuizAttemptHistoriesEntity> quizAttemptHistories;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
 }

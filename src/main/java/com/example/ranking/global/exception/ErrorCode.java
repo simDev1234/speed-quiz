@@ -50,7 +50,8 @@ public enum ErrorCode {
     PERMISSION_DENIED(HttpStatus.FORBIDDEN, "권한이 거부되었습니다."),
 
     // 퀴즈 관련 에러
-    QUESTION_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "문항 데이터를 찾을 수 없습니다."), 
+    QUESTION_TITLE_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "퀴즈를 찾을 수 없습니다."),
+    QUESTION_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "문항 데이터를 찾을 수 없습니다."),
     CHOICE_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "보기 데이터를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;

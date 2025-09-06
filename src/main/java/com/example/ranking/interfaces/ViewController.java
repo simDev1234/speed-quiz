@@ -24,7 +24,8 @@ public class ViewController {
     public String getMainPage(@AuthenticationPrincipal UserDetails userDetails, Model model){
 
         model.addAttribute("isLoggedIn", true);
-        model.addAttribute("nickname", ((UserAuthDetails) userDetails).getUser().nickname());
+        model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
+        model.addAttribute("cardList", dailyQuizReadService.findAllActiveQuestionTitles());
 
         return "index";
     }
@@ -40,30 +41,41 @@ public class ViewController {
     }
 
     @GetMapping("/quiz")
-    public String getQuizPage(@AuthenticationPrincipal UserDetails userDetails, Model model){
+    public String getQuizPage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam Long questionTitleId, Model model){
 
         model.addAttribute("isLoggedIn", true);
-        model.addAttribute("nickname", ((UserAuthDetails) userDetails).getUser().nickname());
-        model.addAttribute("questions", dailyQuizReadService.findAllActiveQuestions());
+        model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
+        model.addAttribute("questions", dailyQuizReadService.findAllActiveQuestionsByQuestionTitleId(questionTitleId));
 
         return "quiz";
     }
 
     @GetMapping("/quiz/result")
-    public String getResultPage(@AuthenticationPrincipal UserDetails userDetails, Model model){
+    public String getResultPage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam Long questionTitleId, Model model){
 
         model.addAttribute("isLoggedIn", true);
-        model.addAttribute("nickname", ((UserAuthDetails) userDetails).getUser().nickname());
-        model.addAttribute("results", dailyQuizReadService.findUserQuizAttemptHistories(userDetails.getUsername()));
+        model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
+        model.addAttribute("results", dailyQuizReadService.findUserQuizAttemptHistories(userDetails.getUsername(), questionTitleId));
 
         return "result";
     }
 
+    @GetMapping("/quiz-create")
+    public String getQuizCreatePage(@AuthenticationPrincipal UserDetails userDetails, Model model){
+
+        model.addAttribute("isLoggedIn", true);
+        model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
+        model.addAttribute("subjects", dailyQuizReadService.findAllSubjects());
+
+        return "quiz-create";
+    }
+
+    // TODO
     @GetMapping("/ranking")
     public String getRankingPage(@AuthenticationPrincipal UserDetails userDetails, Model model){
 
         model.addAttribute("isLoggedIn", true);
-        model.addAttribute("nickname", ((UserAuthDetails) userDetails).getUser().nickname());
+        model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
 
         return "ranking";
     }

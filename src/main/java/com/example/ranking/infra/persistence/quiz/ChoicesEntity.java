@@ -1,5 +1,6 @@
 package com.example.ranking.infra.persistence.quiz;
 
+import com.example.ranking.infra.persistence.BasicEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChoicesEntity {
+public class ChoicesEntity extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,11 +33,5 @@ public class ChoicesEntity {
 
     @Column(name = "is_correct")
     private Boolean isCorrect;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
 }

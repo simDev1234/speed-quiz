@@ -6,6 +6,14 @@ public abstract class QuizEntityTypes {
         MULTIPLE_CHOICE, TRUE_FALSE, FILL_IN_BLANK
     }
 
+    public enum SubjectStatus {
+        ACTIVE, INACTIVE, DELETED
+    }
+
+    public enum QuestionTitleStatus {
+        ACTIVE, INACTIVE, DELETED
+    }
+
     public enum QuestionStatus {
         ACTIVE, INACTIVE, DELETED
     }

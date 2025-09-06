@@ -51,28 +51,33 @@ public class AopLogging {
 
         HttpServletRequest request = attributes.getRequest();
         HttpServletResponse response = attributes.getResponse();
+        ApiLogEntity newApiLog = new ApiLogEntity();
         Object result;
 
         try {
 
-            result = joinPoint.proceed(); // 실제 컨트롤러 실행
 
-            ApiLogEntity newApiLog = new ApiLogEntity();
             newApiLog.setClientIp(clientIpExtractor.getClientIp(request));
             newApiLog.setRequestMethod(request.getMethod());
             newApiLog.setRequestPath(request.getRequestURI());
             newApiLog.setRequestParam(buildParamsString(request));
             newApiLog.setRequestBody(extractRequestBody(request));
-            newApiLog.setResponseStatus(response.getStatus());
+
+            result = joinPoint.proceed(); // 실제 컨트롤러 실행
+
             newApiLog.setResponse(extractResponseBody(response));
+
+        } catch (Throwable e) {
+            log.error("Exception during request:: ", e);
+            newApiLog.setResponse("Error : " + e.getMessage());
+            throw e;
+        } finally {
+
+            newApiLog.setResponseStatus(response.getStatus());
             newApiLog.setLoggedAt(LocalDateTime.now());
 
             createOrUpdateApiLogEntity(newApiLog);
             incrementRedisApiLogCacheCount(newApiLog);
-
-        } catch (Throwable e) {
-            log.error("Exception during request:: ", e);
-            throw e;
         }
 
         return result;
@@ -95,7 +100,6 @@ public class AopLogging {
     }
 
     private String extractResponseBody(HttpServletResponse response) {
-        // TODO 이 부분 다른 api로 테스트 필요
         if (response instanceof ContentCachingResponseWrapper wrappedResponse) {
             byte[] buf = wrappedResponse.getContentAsByteArray();
             if (buf.length > 0) {

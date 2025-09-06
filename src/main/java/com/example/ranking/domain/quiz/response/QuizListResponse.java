@@ -2,8 +2,11 @@ package com.example.ranking.domain.quiz.response;
 
 import com.example.ranking.infra.persistence.quiz.ChoicesEntity;
 import com.example.ranking.infra.persistence.quiz.QuestionsEntity;
+import com.example.ranking.infra.persistence.quiz.QuestionsTitlesEntity;
 import com.example.ranking.infra.persistence.quiz.SubjectsEntity;
 import lombok.Builder;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public abstract class QuizListResponse {
@@ -22,7 +25,32 @@ public abstract class QuizListResponse {
     }
 
     @Builder
+    public record QuestionTitle(
+            Long questionTitleId,
+            Long userId,
+            String titleText,
+            String description,
+            Integer timeLimit,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ){
+        public static QuestionTitle fromEntity(QuestionsTitlesEntity questionsTitlesEntity){
+            return QuestionTitle.builder()
+                    .questionTitleId(questionsTitlesEntity.getId())
+                    .userId(questionsTitlesEntity.getUser().getId())
+                    .titleText(questionsTitlesEntity.getTitle())
+                    .description(questionsTitlesEntity.getDescription())
+                    .timeLimit(questionsTitlesEntity.getTimeLimit())
+                    .createdAt(questionsTitlesEntity.getCreatedAt())
+                    .updatedAt(questionsTitlesEntity.getUpdatedAt())
+                    .build();
+        }
+    }
+
+    @Builder
     public record Question(
+            Long questionTitleId,
+            Integer timeLimit,
             Long questionId,
             Subject subject,
             String questionType,
@@ -31,6 +59,8 @@ public abstract class QuizListResponse {
     ) {
         public static Question fromEntity(QuestionsEntity questionsEntity){
             return Question.builder()
+                    .questionTitleId(questionsEntity.getQuestionTitle().getId())
+                    .timeLimit(questionsEntity.getQuestionTitle().getTimeLimit())
                     .questionId(questionsEntity.getId())
                     .subject(Subject.fromEntity(questionsEntity.getSubject()))
                     .questionType(questionsEntity.getQuestionType().name())

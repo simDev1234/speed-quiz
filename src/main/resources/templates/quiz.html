@@ -72,8 +72,8 @@
         const questions = /*[[${questions}]]*/ []
         let currentQuestionIndex = 0;
         let selectedChoiceId = null;
-        let timeLeft = 5;
-        let totalTime = 5;
+        let timeLeft = /*[[${questions != null and #lists.size(questions) > 0 ? questions[0].timeLimit : 5}]]*/ 5;
+        let totalTime = /*[[${questions != null and #lists.size(questions) > 0 ? questions[0].timeLimit : 5}]]*/ 5;
         let timerInterval;
         let isTimeUp = false;
         const userAnswers = [];

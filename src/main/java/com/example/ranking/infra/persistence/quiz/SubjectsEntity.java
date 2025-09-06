@@ -1,11 +1,12 @@
 package com.example.ranking.infra.persistence.quiz;
 
+import com.example.ranking.infra.persistence.BasicEntity;
+import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.SubjectStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
 
 @Table(name = "subjects")
 @Entity
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubjectsEntity {
+public class SubjectsEntity extends BasicEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +22,7 @@ public class SubjectsEntity {
 
     private String name;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Enumerated(EnumType.STRING)
+    private SubjectStatus status;
 
 }

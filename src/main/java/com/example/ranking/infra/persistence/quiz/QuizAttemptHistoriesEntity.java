@@ -27,6 +27,10 @@ public class QuizAttemptHistoriesEntity extends BasicEntity {
     private UsersEntity user;
 
     @ManyToOne
+    @JoinColumn(name = "question_title_id")
+    private QuestionsTitlesEntity questionTitle;
+
+    @ManyToOne
     @JoinColumn(name = "question_id")
     private QuestionsEntity question;
 
