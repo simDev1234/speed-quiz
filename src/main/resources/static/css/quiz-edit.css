@@ -1,0 +1,526 @@
+/* ========================================
+   퀴즈 편집 페이지 스타일 (생성 페이지 스타일 호환)
+======================================== */
+
+/* 헤더 섹션 */
+.edit-header {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    position: relative;
+}
+
+.edit-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 15px 15px 0 0;
+}
+
+.edit-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.edit-header p {
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+/* 메인 컨테이너 */
+.edit-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* 폼 섹션 */
+.form-section {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.form-section:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 1px;
+    background: #e0e0e0;
+}
+
+.form-section h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-icon {
+    font-size: 20px;
+}
+
+/* 폼 요소들 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-input::placeholder {
+    color: #adb5bd;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* 문제 컨테이너 */
+.questions-container {
+    border: 2px dashed #e0e0e0;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 200px;
+    transition: all 0.3s ease;
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.questions-container:hover {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+/* 문제 아이템 */
+.question-item {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.question-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 15px 15px 0 0;
+}
+
+.question-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.question-number {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 16px;
+}
+
+.delete-question-btn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.delete-question-btn:hover {
+    background: #ff3742;
+    transform: translateY(-1px);
+}
+
+/* 선택지 컨테이너 */
+.choices-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.choice-item {
+    position: relative;
+}
+
+.choice-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.choice-wrapper:hover {
+    background: #e9ecef;
+    border-color: #667eea;
+}
+
+.choice-wrapper.is-correct {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+}
+
+.choice-radio {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #28a745;
+}
+
+.choice-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px;
+    font-size: 13px;
+}
+
+.choice-input:focus {
+    outline: none;
+    background: white;
+    border-radius: 4px;
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.correct-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #28a745;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.choice-wrapper.is-correct .correct-label {
+    opacity: 1;
+}
+
+/* 기존 choice-group 스타일과 호환성을 위한 추가 */
+.choice-group {
+    position: relative;
+}
+
+.correct-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.correct-indicator.active {
+    color: #28a745;
+}
+
+.correct-indicator:not(.active) {
+    color: #dee2e6;
+}
+
+.correct-indicator:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* 문제 추가 버튼 */
+.add-question-btn {
+    width: 100%;
+    padding: 15px;
+    border: 2px dashed #667eea;
+    border-radius: 15px;
+    background: transparent;
+    color: #667eea;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.add-question-btn:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+/* 액션 버튼들 */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-primary {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    padding: 15px 30px;
+    border: 2px solid #667eea;
+    border-radius: 25px;
+    background: transparent;
+    color: #667eea;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-secondary:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* 빈 상태 */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #7f8c8d;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+}
+
+.empty-state p {
+    line-height: 1.5;
+}
+
+/* 개선된 인터랙션 효과들 */
+.form-input:hover,
+.form-select:hover {
+    border-color: #b8c5ea;
+}
+
+.question-item .form-input {
+    border: 1px solid #e9ecef;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: white;
+}
+
+.question-item .form-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+/* 로딩 상태 */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        width: 100%;
+        max-width: 100%;
+        min-height: auto;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .main-content {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .edit-container {
+        padding: 20px;
+    }
+
+    .choices-container {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+
+    .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .delete-question-btn {
+        align-self: flex-end;
+    }
+
+    .choice-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .choice-radio {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-container {
+        padding: 15px;
+        border-radius: 15px;
+    }
+
+    .edit-header {
+        padding: 15px;
+    }
+
+    .edit-header h1 {
+        font-size: 24px;
+    }
+
+    .form-input,
+    .form-select {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .question-item {
+        padding: 15px;
+    }
+
+    .add-question-btn {
+        padding: 12px;
+        font-size: 15px;
+    }
+}
+
+/* 접근성 개선 */
+.form-input:focus,
+.form-select:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.add-question-btn:focus,
+.delete-question-btn:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* 애니메이션 감소 설정 지원 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

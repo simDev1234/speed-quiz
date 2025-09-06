@@ -129,9 +129,9 @@ function collectFormData() {
     });
 
     return {
+        subjectId : subject,
         title : title,
         description : description,
-        subjectName : subject,
         timeLimit   : parseInt(timeLimit),
         questions   : questions
     };

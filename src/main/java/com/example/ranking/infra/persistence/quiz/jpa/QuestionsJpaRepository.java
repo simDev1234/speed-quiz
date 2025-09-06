@@ -21,6 +21,11 @@ public interface QuestionsJpaRepository extends JpaRepository<QuestionsEntity, L
     List<QuestionsEntity> findQuestionsWithChoicesByQuestionTitleIdAndStatus(@Param("questionTitleId") Long questionTitleId,
                                                                              @Param("status") QuestionStatus status);
 
+    @Query("select q from QuestionsEntity q " +
+            "join fetch q.choices " +
+            "where q.id = :id")
+    Optional<QuestionsEntity> findQuestionWithChoicesById(@Param("id") Long id);
+
 //    @Query("select q from QuestionsEntity q " +
 //            "join fetch q.subject " +
 //            "join fetch q.choices " +

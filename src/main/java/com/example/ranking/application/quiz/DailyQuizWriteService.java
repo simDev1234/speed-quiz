@@ -1,6 +1,9 @@
 package com.example.ranking.application.quiz;
 
+import com.example.ranking.domain.quiz.request.QuizCreateRequest;
 import com.example.ranking.domain.quiz.request.QuizCreateRequest.*;
+import com.example.ranking.domain.quiz.request.QuizEditRequest;
+import com.example.ranking.domain.quiz.request.QuizEditRequest.*;
 import com.example.ranking.domain.quiz.request.QuizSubmitRequest.UserAnswerChoice;
 import com.example.ranking.global.exception.ErrorCode;
 import com.example.ranking.global.exception.QuizException;
@@ -11,10 +14,8 @@ import com.example.ranking.infra.persistence.user.jpa.UsersJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +34,45 @@ public class DailyQuizWriteService {
         UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
                 .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
 
-        SubjectsEntity subjectsEntity = subjectsJpaRepository.save(QuizCreate.toSubjectsEntity(quizCreate));
-        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.save(QuizCreate.toQuestionsTitlesEntity(quizCreate, usersEntity));
+        SubjectsEntity subjectsEntity = subjectsJpaRepository.findById(quizCreate.subjectId())
+                .orElseThrow(() -> new QuizException(ErrorCode.QUIZ_SUBJECT_NOT_FOUND));
 
-        for (Question question : quizCreate.questions()) {
-            QuestionsEntity questionsEntity = questionsJpaRepository.save(Question.toQuestionsEntity(subjectsEntity, questionsTitlesEntity, question));
-            List<ChoicesEntity> choicesEntities = choicesJpaRepository.saveAll(Question.toChoicesEntities(subjectsEntity, questionsEntity, question));
+        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.save(QuizCreate.toQuestionsTitlesEntity(subjectsEntity, usersEntity, quizCreate));
+
+        for (QuizCreateRequest.Question question : quizCreate.questions()) {
+            QuestionsEntity questionsEntity = questionsJpaRepository.save(QuizCreateRequest.Question.toQuestionsEntity(subjectsEntity, questionsTitlesEntity, question));
+            List<ChoicesEntity> choicesEntities = choicesJpaRepository.saveAll(QuizCreateRequest.Question.toChoicesEntities(subjectsEntity, questionsEntity, question));
+        }
+
+    }
+
+    @Transactional
+    public void editExistingQuiz(String email, Long questionTitleId, QuizEdit quizEdit) {
+
+        UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
+
+        SubjectsEntity subjectsEntity = subjectsJpaRepository.findById(quizEdit.subjectId())
+                .orElseThrow(() -> new QuizException(ErrorCode.QUIZ_SUBJECT_NOT_FOUND));
+
+        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.findByIdAndUserWithJoinFetch(questionTitleId, usersEntity)
+                .orElseThrow(() -> new QuizException(ErrorCode.QUESTION_TITLE_NOT_FOUND));
+        questionsTitlesEntity.changeQuestionsEntityColumns(subjectsEntity, quizEdit);
+
+        List<QuizEditRequest.Question> questions = quizEdit.questions();
+        for (int i = 0; i < questions.size(); i++) {
+
+            QuizEditRequest.Question curQuestion = questions.get(i);
+            QuestionsEntity prevQuestionsEntity = questionsJpaRepository.findQuestionWithChoicesById(curQuestion.questionId())
+                    .orElseThrow(() -> new QuizException(ErrorCode.QUESTION_NOT_FOUND));
+            prevQuestionsEntity.changeQuestionsEntityColumns(subjectsEntity, questionsTitlesEntity, curQuestion);
+
+            for (int j = 0; j < curQuestion.choices().size(); j++) {
+                Choice curChoice = curQuestion.choices().get(j);
+                ChoicesEntity prevChoicesEntity = prevQuestionsEntity.getChoices().get(j);
+                prevChoicesEntity.changePrevChoicesEntityColumnsByChoice(subjectsEntity, prevQuestionsEntity, curChoice);
+            }
+
         }
 
     }
@@ -107,6 +141,5 @@ public class DailyQuizWriteService {
 
         return quizAttemptHistoriesEntity;
     }
-
 
 }

@@ -1,17 +1,16 @@
 package com.example.ranking.infra.persistence.quiz;
 
+import com.example.ranking.domain.quiz.request.QuizEditRequest;
 import com.example.ranking.infra.persistence.BasicEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Table(name = "choices")
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,5 +32,13 @@ public class ChoicesEntity extends BasicEntity {
 
     @Column(name = "is_correct")
     private Boolean isCorrect;
+
+    public void changePrevChoicesEntityColumnsByChoice(SubjectsEntity subjectsEntity, QuestionsEntity questionsEntity, QuizEditRequest.Choice choice){
+        this.subject = subjectsEntity;
+        this.question = questionsEntity;
+        this.text = choice.choiceText();
+        this.isCorrect = choice.isCorrect();
+
+    }
 
 }

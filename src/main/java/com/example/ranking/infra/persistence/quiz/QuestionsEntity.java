@@ -1,5 +1,6 @@
 package com.example.ranking.infra.persistence.quiz;
 
+import com.example.ranking.domain.quiz.request.QuizEditRequest;
 import com.example.ranking.infra.persistence.BasicEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,5 +46,13 @@ public class QuestionsEntity extends BasicEntity {
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<QuizAttemptHistoriesEntity> quizAttemptHistories;
+
+    public void changeQuestionsEntityColumns(SubjectsEntity subjectsEntity,
+                                             QuestionsTitlesEntity questionsTitlesEntity,
+                                             QuizEditRequest.Question question){
+        this.subject = subjectsEntity;
+        this.questionTitle = questionsTitlesEntity;
+        this.questionText = question.questionText();
+    }
 
 }

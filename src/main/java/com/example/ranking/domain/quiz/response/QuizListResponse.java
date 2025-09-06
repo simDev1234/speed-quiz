@@ -50,21 +50,21 @@ public abstract class QuizListResponse {
     @Builder
     public record Question(
             Long questionTitleId,
-            Integer timeLimit,
             Long questionId,
             Subject subject,
             String questionType,
             String questionText,
+            Integer timeLimit,
             List<Choice> choices
     ) {
         public static Question fromEntity(QuestionsEntity questionsEntity){
             return Question.builder()
                     .questionTitleId(questionsEntity.getQuestionTitle().getId())
-                    .timeLimit(questionsEntity.getQuestionTitle().getTimeLimit())
                     .questionId(questionsEntity.getId())
                     .subject(Subject.fromEntity(questionsEntity.getSubject()))
                     .questionType(questionsEntity.getQuestionType().name())
                     .questionText(questionsEntity.getQuestionText())
+                    .timeLimit(questionsEntity.getQuestionTitle().getTimeLimit())
                     .choices(questionsEntity.getChoices().stream().map(Choice::fromEntity).toList())
                     .build();
         }

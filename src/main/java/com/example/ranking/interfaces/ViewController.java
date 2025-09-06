@@ -1,6 +1,7 @@
 package com.example.ranking.interfaces;
 
 import com.example.ranking.application.quiz.DailyQuizReadService;
+import com.example.ranking.domain.quiz.response.QuizDetailResponse;
 import com.example.ranking.domain.user.UserAuthDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -78,6 +80,20 @@ public class ViewController {
         model.addAttribute("subjects", dailyQuizReadService.findAllSubjects());
 
         return "quiz-create";
+    }
+
+    @GetMapping("/quiz/edit/{questionTitleId}")
+    public String getQuizEditPage(@AuthenticationPrincipal UserDetails userDetails,
+                                  @PathVariable Long questionTitleId,
+                                  Model model){
+
+        model.addAttribute("isLoggedIn", true);
+        model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
+        model.addAttribute("subjects", dailyQuizReadService.findAllSubjects());
+        QuizDetailResponse.QuizDetail quizDetail = dailyQuizReadService.findQuizDetailByQuestionTitleIdAndUser(questionTitleId, userDetails.getUsername());
+        model.addAttribute("quizDetail", quizDetail);
+
+        return "quiz-edit";
     }
 
     // TODO

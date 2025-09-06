@@ -1,6 +1,7 @@
 package com.example.ranking.application.quiz;
 
-import com.example.ranking.domain.quiz.response.QuizListResponse.Subject;
+import com.example.ranking.domain.quiz.response.QuizDetailResponse.QuizDetail;
+import com.example.ranking.domain.quiz.response.QuizListResponse;
 import com.example.ranking.domain.quiz.response.QuizListResponse.Question;
 import com.example.ranking.domain.quiz.response.QuizListResponse.QuestionTitle;
 import com.example.ranking.domain.quiz.response.QuizResultResponse.PersonalQuizResult;
@@ -14,14 +15,15 @@ import com.example.ranking.infra.persistence.quiz.jpa.QuestionsJpaRepository;
 import com.example.ranking.infra.persistence.quiz.jpa.QuestionsTitlesJpaRepository;
 import com.example.ranking.infra.persistence.quiz.jpa.QuizAttemptHistoriesJpaRepository;
 import com.example.ranking.infra.persistence.quiz.jpa.SubjectsJpaRepository;
-import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.SubjectStatus;
 import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.QuestionStatus;
 import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.QuestionTitleStatus;
+import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.SubjectStatus;
 import com.example.ranking.infra.persistence.user.UsersEntity;
 import com.example.ranking.infra.persistence.user.jpa.UsersJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -115,12 +117,22 @@ public class DailyQuizReadService {
     }
 
 
-    public List<Subject> findAllSubjects() {
+    public List<QuizListResponse.Subject> findAllSubjects() {
         return subjectsJpaRepository.findAllByStatus(SubjectStatus.ACTIVE)
                 .stream()
-                .map(Subject::fromEntity)
+                .map(QuizListResponse.Subject::fromEntity)
                 .toList();
     }
 
+    public QuizDetail findQuizDetailByQuestionTitleIdAndUser(Long questionTitleId, String email) {
+
+        UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
+
+        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.findByIdAndUserWithJoinFetch(questionTitleId, usersEntity)
+                .orElseThrow(() -> new QuizException(ErrorCode.QUESTION_TITLE_NOT_FOUND));
+
+        return QuizDetail.fromEntity(questionsTitlesEntity);
+    }
 
 }
