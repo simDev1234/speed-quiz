@@ -110,16 +110,19 @@
                                          th:each="choice, choiceStat : ${question.choices}">
                                         <div class="choice-wrapper"
                                              th:class="|choice-wrapper ${choice.isCorrect ? 'is-correct' : ''}|">
+
                                             <input type="radio"
-                                                   th:name="|correct_${questionStat.index}|"
+                                                   th:name="|correct_${question.questionId}|"
                                                    th:value="${choice.choiceId}"
-                                                   th:checked="${choice.isCorrect ? 'checked' : ''}"
+                                                   th:checked="${choice.isCorrect}"
                                                    class="choice-radio">
+
                                             <input type="text"
                                                    class="choice-input form-input"
                                                    th:value="${choice.choiceText}"
                                                    th:placeholder="|선택지 ${choiceStat.index + 1}|"
                                                    required>
+
                                             <label class="correct-label">정답</label>
                                         </div>
                                     </div>

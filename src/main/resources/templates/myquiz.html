@@ -63,7 +63,7 @@
                     <div class="quiz-info">
                         <span class="info-item">
                             <span class="info-icon">⏰</span>
-                            <span th:text="${quiz.timeLimit} + '초'">30초</span>
+                            <span th:value="${quiz.timeLimit}" th:text="${quiz.timeLimit} + '초'">30초</span>
                         </span>
                         <span class="info-item">
                             <span class="info-icon">📅</span>
@@ -103,7 +103,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
-<script th:src="@{/js/signout.js}"></script>
 <script th:src="@{/js/myquiz.js}"></script>
+<script th:src="@{/js/signout.js}"></script>
 </body>
 </html>
