@@ -1,16 +1,16 @@
 package com.example.ranking.infra.persistence.quiz.jpa;
 
+import com.example.ranking.domain.quiz.response.QuizListResponse;
 import com.example.ranking.infra.persistence.quiz.QuestionsTitlesEntity;
 import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.QuestionTitleStatus;
 import com.example.ranking.infra.persistence.user.UsersEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.Optional;
 
-public interface QuestionsTitlesJpaRepository extends JpaRepository<QuestionsTitlesEntity, Long> {
+public interface QuestionsTitlesJpaRepository extends JpaRepository<QuestionsTitlesEntity, Long>, QuestionTitleQueryDslRepository {
 
     List<QuestionsTitlesEntity> findAllByStatus(QuestionTitleStatus status);
 

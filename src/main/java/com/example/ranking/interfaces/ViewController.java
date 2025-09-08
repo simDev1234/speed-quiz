@@ -2,6 +2,7 @@ package com.example.ranking.interfaces;
 
 import com.example.ranking.application.quiz.DailyQuizReadService;
 import com.example.ranking.domain.quiz.response.QuizDetailResponse;
+import com.example.ranking.domain.quiz.response.QuizListResponse;
 import com.example.ranking.domain.user.UserAuthDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 @RequestMapping
@@ -27,7 +30,7 @@ public class ViewController {
 
         model.addAttribute("isLoggedIn", true);
         model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
-        model.addAttribute("cardList", dailyQuizReadService.findAllActiveQuestionTitles());
+        model.addAttribute("cardList", dailyQuizReadService.findAllActiveQuestionTitles(userDetails.getUsername()));
 
         return "index";
     }

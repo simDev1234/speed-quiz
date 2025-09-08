@@ -41,7 +41,7 @@ public class DailyQuizReadService {
     private final QuestionsJpaRepository questionsJpaRepository;
     private final QuizAttemptHistoriesJpaRepository quizAttemptHistoriesJpaRepository;
 
-    public List<QuestionTitle> findAllActiveQuestionTitles() {
+    public List<QuestionTitle> findAllActiveQuestionTitles(String email) {
 
         return questionsTitlesJpaRepository.findAllByStatus(QuestionTitleStatus.ACTIVE)
                 .stream()
@@ -96,6 +96,7 @@ public class DailyQuizReadService {
                 .setScale(1, RoundingMode.HALF_UP);
 
         return PersonalQuizResult.builder()
+                .questionTitleId(questionsTitlesEntity.getId())
                 .finalScore(finalScore)
                 .finalAccuracyRate(finalAccuracyRate)
                 .correctAnswerCounts(correctCounts)

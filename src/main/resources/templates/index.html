@@ -29,6 +29,8 @@
                     <div class="card-title" th:text="${card.titleText()}">퀴즈 시작하기</div>
                     <div class="card-description" th:text="${card.description()}">다양한 주제의 퀴즈로 지식을 테스트해보세요</div>
                     <a th:href="@{/quiz(questionTitleId=${card.questionTitleId()})}" class="start-btn">시작하기</a>
+                    <a th:href="@{/quiz/result(questionTitleId=${card.questionTitleId()})} "
+                       class="result-btn">결과보기</a>
                 </div>
             </div>
         </div>

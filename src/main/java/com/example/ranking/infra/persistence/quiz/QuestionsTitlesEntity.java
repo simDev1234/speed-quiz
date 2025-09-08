@@ -41,6 +41,9 @@ public class QuestionsTitlesEntity extends BasicEntity {
     @OneToMany(mappedBy = "questionTitle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<QuestionsEntity> questions;
 
+    @OneToMany(mappedBy = "questionTitle", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<QuizAttemptHistoriesEntity> quizAttemptHistories;
+
     @Column(name = "time_limit")
     private Integer timeLimit;
 

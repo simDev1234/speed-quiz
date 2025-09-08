@@ -155,8 +155,11 @@ function submitFinalAnswers() {
             credentials: 'include',
         });
 
+        // 500ms 쉬기
+        new Promise(resolve => setTimeout(resolve, 500));
+
         // 성공 후 이동
-        location.href = '/quiz/result?questionTitleId=' + questionTitleId;
+        window.location.href = `${NGROK_URL}/quiz/result?questionTitleId=` + questionTitleId;
     } catch (error) {
         console.error('제출 실패:', error);
         alert('답안 제출 중 문제가 발생했습니다.');

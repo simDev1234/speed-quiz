@@ -13,6 +13,7 @@ public abstract class QuizResultResponse {
 
     @Builder
     public record PersonalQuizResult(
+        Long questionTitleId,
         BigDecimal finalScore,
         BigDecimal finalAccuracyRate,
         int correctAnswerCounts,

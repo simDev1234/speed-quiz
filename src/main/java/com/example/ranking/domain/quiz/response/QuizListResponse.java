@@ -32,7 +32,8 @@ public abstract class QuizListResponse {
             String description,
             Integer timeLimit,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime updatedAt,
+            Boolean hasParticipationHistory
     ){
         public static QuestionTitle fromEntity(QuestionsTitlesEntity questionsTitlesEntity){
             return QuestionTitle.builder()
@@ -45,6 +46,20 @@ public abstract class QuizListResponse {
                     .updatedAt(questionsTitlesEntity.getUpdatedAt())
                     .build();
         }
+
+        public QuestionTitle(Long questionTitleId, Long userId, String titleText,
+                             String description, Integer timeLimit, LocalDateTime createdAt,
+                             LocalDateTime updatedAt, Boolean hasParticipationHistory) {
+            this.questionTitleId = questionTitleId;
+            this.userId = userId;
+            this.titleText = titleText;
+            this.description = description;
+            this.timeLimit = timeLimit;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.hasParticipationHistory = hasParticipationHistory;
+        }
+
     }
 
     @Builder

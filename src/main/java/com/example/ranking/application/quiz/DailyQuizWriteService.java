@@ -1,9 +1,10 @@
 package com.example.ranking.application.quiz;
 
 import com.example.ranking.domain.quiz.request.QuizCreateRequest;
-import com.example.ranking.domain.quiz.request.QuizCreateRequest.*;
+import com.example.ranking.domain.quiz.request.QuizCreateRequest.QuizCreate;
 import com.example.ranking.domain.quiz.request.QuizEditRequest;
-import com.example.ranking.domain.quiz.request.QuizEditRequest.*;
+import com.example.ranking.domain.quiz.request.QuizEditRequest.Choice;
+import com.example.ranking.domain.quiz.request.QuizEditRequest.QuizEdit;
 import com.example.ranking.domain.quiz.request.QuizSubmitRequest.UserAnswerChoice;
 import com.example.ranking.global.exception.ErrorCode;
 import com.example.ranking.global.exception.QuizException;
@@ -11,15 +12,17 @@ import com.example.ranking.infra.persistence.quiz.*;
 import com.example.ranking.infra.persistence.quiz.jpa.*;
 import com.example.ranking.infra.persistence.user.UsersEntity;
 import com.example.ranking.infra.persistence.user.jpa.UsersJpaRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class DailyQuizWriteService {
 
     private final UsersJpaRepository usersJpaRepository;
@@ -77,6 +80,7 @@ public class DailyQuizWriteService {
 
     }
 
+    @Transactional
     public void saveQuizAnswers(String email, List<UserAnswerChoice> userAnswerChoices) {
 
         UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
@@ -102,10 +106,20 @@ public class DailyQuizWriteService {
                     null : choicesJpaRepository.findByIdWithJoinedFetchQuestion(userAnswerChoice.selectedChoiceId())
                             .orElseThrow(() -> new QuizException(ErrorCode.CHOICE_NOT_FOUND));
 
-            QuizAttemptHistoriesEntity quizAttemptHistoriesEntity = createOrUpdateQuizAttemptHistoriesEntity(
-                    questionsTitlesEntity, questionsEntity, usersEntity, selectedChoiceEntity, correctChoiceEntity
+            Optional<QuizAttemptHistoriesEntity> optionalQuizAttemptHistoriesEntity
+                    = quizAttemptHistoriesJpaRepository.findQuizAttemptHistoriesEntitiesByQuestionAndUser(questionsEntity, usersEntity);
+
+            QuizAttemptHistoriesEntity quizAttemptHistoriesEntity = optionalQuizAttemptHistoriesEntity.orElseGet(() -> QuizAttemptHistoriesEntity.builder()
+                    .user(usersEntity)
+                    .questionTitle(questionsTitlesEntity)
+                    .question(questionsEntity)
+                    .selectedChoice(selectedChoiceEntity)
+                    .correctChoice(correctChoiceEntity)
+                    .attemptCount(0)
+                    .build()
             );
 
+            quizAttemptHistoriesEntity.updateLatestSelectedChoice(selectedChoiceEntity);
             quizAttemptHistoriesEntity.incrementAttemptCount();
 
             bufferedQuizAttemptHistoriesList.add(quizAttemptHistoriesEntity);
@@ -120,26 +134,6 @@ public class DailyQuizWriteService {
         if (userAnswerChoices.isEmpty()) {
             throw new QuizException(ErrorCode.INVALID_INPUT);
         }
-    }
-
-    private QuizAttemptHistoriesEntity createOrUpdateQuizAttemptHistoriesEntity(QuestionsTitlesEntity questionsTitlesEntity, QuestionsEntity questionsEntity, UsersEntity usersEntity, ChoicesEntity selectedChoiceEntity, ChoicesEntity correctChoiceEntity) {
-
-        Optional<QuizAttemptHistoriesEntity> optionalQuizAttemptHistoriesEntity
-                = quizAttemptHistoriesJpaRepository.findQuizAttemptHistoriesEntitiesByQuestionAndUser(questionsEntity, usersEntity);
-
-        QuizAttemptHistoriesEntity quizAttemptHistoriesEntity = optionalQuizAttemptHistoriesEntity.orElseGet(() -> QuizAttemptHistoriesEntity.builder()
-                .user(usersEntity)
-                .questionTitle(questionsTitlesEntity)
-                .question(questionsEntity)
-                .selectedChoice(selectedChoiceEntity)
-                .correctChoice(correctChoiceEntity)
-                .attemptCount(0)
-                .build()
-        );
-
-        quizAttemptHistoriesEntity.updateLatestSelectedChoice(selectedChoiceEntity);
-
-        return quizAttemptHistoriesEntity;
     }
 
 }
