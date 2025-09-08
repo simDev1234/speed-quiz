@@ -113,7 +113,7 @@
                                             <input type="radio"
                                                    th:name="|correct_${questionStat.index}|"
                                                    th:value="${choice.choiceId}"
-                                                   th:checked="${choice.isCorrect}"
+                                                   th:checked="${choice.isCorrect ? 'checked' : ''}"
                                                    class="choice-radio">
                                             <input type="text"
                                                    class="choice-input form-input"

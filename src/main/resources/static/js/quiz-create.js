@@ -149,7 +149,7 @@ document.getElementById('quizCreateForm').addEventListener('submit', async funct
         return;
     }
 
-    if (!formData.subjectName) {
+    if (!formData.subjectId.trim() || formData.subjectId === '0') {
         showAlert('과목을 선택해주세요.');
         return;
     }
@@ -187,7 +187,7 @@ document.getElementById('quizCreateForm').addEventListener('submit', async funct
         showAlert('퀴즈가 성공적으로 저장되었습니다!');
         // 성공 시 리다이렉트 또는 폼 초기화
         setTimeout(() => {
-            window.location.href = '/';
+            window.location.href = `/`;
         }, 1000);
     }
 });

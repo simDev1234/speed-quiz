@@ -35,7 +35,7 @@ public class UserMailAuthService {
     @Value("${spring.mail.expirationtime.minutes}")
     private int expirationMinutes;
 
-    public void sendEmailAuthVerificationCode(String email){
+    public void sendEmailAuthVerificationCodeForUserNotExisting(String email){
 
         Optional<UsersEntity> optionalUsersEntity = usersJpaRepository.findUserEntityByEmail(email);
 
@@ -43,20 +43,34 @@ public class UserMailAuthService {
             throw new QuizException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
+        sendHtmlEmailAuthCode(email);
+
+    }
+
+    public void sendEmailAuthVerificationCodeForUserExisting(String email){
+
+        UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
+
+        sendHtmlEmailAuthCode(email);
+
+    }
+
+    private void sendHtmlEmailAuthCode(String email) {
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime expirationTime = currentTime.plusMinutes(expirationMinutes);
         String verificationCode = createEmailAuthVerificationCode(currentTime);
 
         userEmailAuthJpaRepository.save(
                 UserEmailAuthEntity.builder()
+                        .email(email)
                         .code(verificationCode)
                         .createdAt(currentTime)
                         .expiratedAt(expirationTime)
                         .build()
         );
 
-        mailSender.sendHtmlEmail(email, EMAIL_AUTH_SUBJECT, createHtmlMailAuthContext(expirationTime, verificationCode));
-
+        mailSender.sendHtmlEmail(email, EMAIL_AUTH_SUBJECT, createHtmlMailAuthContext(email, expirationTime, verificationCode));
     }
 
     private String createEmailAuthVerificationCode(LocalDateTime currentTime) {
@@ -75,7 +89,7 @@ public class UserMailAuthService {
         throw new IllegalStateException("Failed to generate unique verification code after " + MAX_RETRIES + " attempts");
     }
 
-    private String createHtmlMailAuthContext(LocalDateTime expirationTime, String verificationCode) {
+    private String createHtmlMailAuthContext(String email, LocalDateTime expirationTime, String verificationCode) {
         Context context = new Context();
         context.setVariable("expirationMinutes", expirationMinutes);
         context.setVariable("verificationCode", verificationCode);
@@ -84,18 +98,18 @@ public class UserMailAuthService {
     }
 
     @Transactional
-    public void verifyEmailAuthCode(String verificationCode) {
+    public void verifyEmailAuthCode(String email, String verificationCode) {
 
         verifyIfVerificationCodeLengthMatching(verificationCode, CODE_LENGTH);
         verifyIfVerificationCodeArithmetic(verificationCode);
 
         UserEmailAuthEntity userEmailAuthEntity = userEmailAuthJpaRepository
-                .findByCode(verificationCode)
+                .findByEmailAndCode(email, verificationCode)
                 .orElseThrow(() -> new QuizException(ErrorCode.INVALID_EMAIL_CODE));
 
         verifyIfVerificationCodeAlreadyExpired(userEmailAuthEntity);
 
-        userEmailAuthEntity.reset();
+        userEmailAuthEntity.resetExpiratedAt();
 
     }
 

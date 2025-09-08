@@ -37,7 +37,7 @@ public class UserLoginService {
 
         if (!bCryptPasswordEncoder.matches(userLoginRequest.loginPassword(), userDetails.getPassword())) {
             log.warn("❌ 로그인 실패 - 이메일: {}", userLoginRequest.loginEmail());
-            throw new BadCredentialsException("Invalid Password or Non-Existed User Email");
+            throw new BadCredentialsException("비밀번호가 잘못되었습니다.");
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,10 +52,13 @@ public class UserLoginService {
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
         if (userLoginRequest.rememberMe()) {
+            log.info("Remember Me 설정 - 사용자: {}", userDetails.getUsername());
             rememberMeServices.loginSuccess(request, response, usernamePasswordAuthenticationToken);
         }
 
         jwtTokenProvider.saveAccessTokenToHttpOnlyCookie(userDetails, response);
+
+        log.info("✅ 로그인 성공 - 사용자: {}", userDetails.getUsername());
 
     }
 

@@ -16,18 +16,21 @@ import java.io.UnsupportedEncodingException;
 public class HttpApiLoggingFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
+
+        // request body는 필터 체인 이후에 읽어야 내용이 존재
+        filterChain.doFilter(wrappedRequest, wrappedResponse);
 
         log.info("request method : {}", request.getMethod());
         log.info("request uri    : {}", request.getRequestURI());
         log.info("request param  : {}", request.getQueryString());
         log.info("request body   : {}", getRequestBody(wrappedRequest));
 
-        filterChain.doFilter(wrappedRequest, wrappedResponse);
-
+        // response 복사
         wrappedResponse.copyBodyToResponse();
     }
 

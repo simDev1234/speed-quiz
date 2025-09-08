@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface UserEmailAuthJpaRepository extends JpaRepository<UserEmailAuthEntity, Long> {
 
     Optional<UserEmailAuthEntity> findByCodeAndExpiratedAtAfter(String code, LocalDateTime currentTime);
-    Optional<UserEmailAuthEntity> findByCode(String code);
+    Optional<UserEmailAuthEntity> findByEmailAndCode(String email, String code);
 
 }

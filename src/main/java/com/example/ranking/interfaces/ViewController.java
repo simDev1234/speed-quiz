@@ -53,7 +53,8 @@ public class ViewController {
     }
 
     @GetMapping("/quiz/result")
-    public String getResultPage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam Long questionTitleId, Model model){
+    public String getResultPage(@AuthenticationPrincipal UserDetails userDetails,
+                                @RequestParam Long questionTitleId, Model model){
 
         model.addAttribute("isLoggedIn", true);
         model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());

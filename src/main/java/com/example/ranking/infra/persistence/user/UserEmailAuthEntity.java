@@ -19,6 +19,8 @@ public class UserEmailAuthEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "email")
+    private String email;
     @Column(name = "code")
     private String code;
     @Column(name = "created_at")
@@ -26,7 +28,7 @@ public class UserEmailAuthEntity {
     @Column(name = "expirated_at")
     private LocalDateTime expiratedAt;
 
-    public void reset(){
+    public void resetExpiratedAt(){
         this.expiratedAt = this.createdAt;
     }
 

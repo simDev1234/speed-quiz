@@ -3,6 +3,8 @@ package com.example.ranking.infra.auth;
 import com.example.ranking.infra.auth.filter.JwtAuthorizationFilter;
 import com.example.ranking.infra.auth.jwt.JwtTokenProvider;
 import com.example.ranking.infra.auth.service.FormUserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -51,23 +53,42 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, formUserDetailsService,
-                    rememberMeServices(formUserDetailsService, tokenRepository())), UsernamePasswordAuthenticationFilter.class)
+                    rememberMeServices(formUserDetailsService, tokenRepository())),
+                    UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(StaticResourceLocation.getAllStaticResourcePaths()).permitAll()
                     .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers( "/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/users/login", "/api/v1/users/email/auth",
-                            "/api/v1/users/email/code", "/api/v1/users/signup").permitAll()
+                    .requestMatchers(
+                            "/api/v1/users/login",
+                            "/api/v1/users/email/auth",
+                            "/api/v1/users/email/code",
+                            "/api/v1/users/signup",
+                            "/api/v1/users/password-reset/*"
+                    ).permitAll()
                     .anyRequest().authenticated()
             )
             .exceptionHandling(exception -> exception
                     .authenticationEntryPoint((request, response, authException) -> {
                         log.info("Access Denied -> AuthenticationException :: ", authException);
-                        response.sendRedirect("/login");
+                        if (request.getRequestURI().startsWith("/api/")) {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Unauthorized\"}");
+                        } else {
+                            response.sendRedirect("/login");
+                        }
                     })
                     .accessDeniedHandler((request, response, accessDeniedException) -> {
                         log.info("Access Denied -> AccessDeniedException :: ", accessDeniedException);
-                        response.sendRedirect("/login");
+                        if (request.getRequestURI().startsWith("/api/")) {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Forbidden\"}");
+                        } else {
+                            response.sendRedirect("/login");
+                        }
                     })
             )
             .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
@@ -87,11 +108,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:8080",
-                "http://localhost:10004"
+                "http://localhost:10004",
+                "https://00141d1c8415.ngrok-free.app"
         ));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("OPTIONS", "GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true); // 쿠키 허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

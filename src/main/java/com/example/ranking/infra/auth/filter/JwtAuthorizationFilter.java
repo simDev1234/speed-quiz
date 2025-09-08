@@ -29,24 +29,35 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final RememberMeServices rememberMeServices;
     private static final String[] permittedPaths = {
             "/login",
+            "/api/v1/users/login",
             "/api/v1/users/email/auth",
             "/api/v1/users/email/code",
-            "/api/v1/users/signup"
+            "/api/v1/users/signup",
+            "/api/v1/users/password-reset/*"
     };
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String currentPath = request.getRequestURI();
+        String method = request.getMethod();
+
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            log.info("OPTIONS method detected. Skip authorization filter.");
+            return true;
+        }
+
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         for (String authPath : permittedPaths) {
-            if (antPathMatcher.match(authPath, currentPath)) {
+            if (antPathMatcher.match(authPath, currentPath) || antPathMatcher.match(authPath + "/*", currentPath)) {
+                log.info("Permitted path detected. Skip authorization filter.");
                 return true;
             }
         }
 
         for (String resourcesPath : StaticResourceLocation.getAllStaticResourcePaths()) {
             if (antPathMatcher.match(resourcesPath, currentPath)) {
+                log.info("Static resource detected. Skip authorization filter.");
                 return true;
             }
         }
@@ -61,6 +72,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
               Optional<String> optionalJwtTokenString = jwtTokenProvider.extractJwtAccessTokenStringFromCookie(request);
 
+              log.info("optionalJwtTokenStringExtraction : Success");
+
               if (optionalJwtTokenString.isPresent() && jwtTokenProvider.isValidAccessToken(optionalJwtTokenString.get())) {
 
                   String email = jwtTokenProvider.getEmailFromJwtAccessToken(optionalJwtTokenString.get())
@@ -73,7 +86,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
               }
 
-              if (SecurityContextHolder.getContext().getAuthentication() == null) {
+              if (SecurityContextHolder.getContext().getAuthentication() == null && !shouldNotFilter(request)) {
                   Authentication rememberMeAuth = rememberMeServices.autoLogin(request, response);
                   if (rememberMeAuth != null) {
                       SecurityContextHolder.getContext().setAuthentication(rememberMeAuth);
@@ -81,18 +94,24 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                   }
               }
 
+              log.info("shouldNotFilter? {} -> {}", request.getRequestURI(), shouldNotFilter(request));
+
               filterChain.doFilter(request, response);
 
           } catch (JwtException e) {
               log.error("JwtAuthorizationFilter -> JwtException :: {}", e.getMessage(), e);
+              SecurityContextHolder.clearContext();
               response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
               response.setContentType("application/json");
               response.getWriter().write("{\"error\": \"Invalid or expired JWT token\"}");
+              return; // 응답 전송 후 체인 중단
           } catch (Exception e) {
               log.error("JwtAuthorizationFilter -> Exception :: {}", e.getMessage(), e);
+              SecurityContextHolder.clearContext();
               response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
               response.setContentType("application/json");
               response.getWriter().write("{\"error\": \"Internal server error\"}");
+              return; // 응답 전송 후 체인 중단
           }
 
     }

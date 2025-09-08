@@ -1,7 +1,6 @@
-//const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-//const csrfToken = $('meta[name="_csrf"]').attr('content');
-//const NGROK_URL = 'https://1dd58f2c7c5c.ngrok-free.app';
-//const NGROK_URL = 'http://localhost:10004';
+const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+const csrfToken = $('meta[name="_csrf"]').attr('content');
+const NGROK_URL = 'https://00141d1c8415.ngrok-free.app'
 
 async function logout() {
 
@@ -17,7 +16,7 @@ async function logout() {
     })
         .then(response => {
             if (response.ok) {
-                window.location.href = '/login';
+                window.location.href = `/login`;
             } else {
                 return response.json().then(err => {
                     showAlert(err?.exception?.message);

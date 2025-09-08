@@ -3,8 +3,7 @@
 // =====================
 const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
 const csrfToken = $('meta[name="_csrf"]').attr('content');
-//const NGROK_URL = 'https://1dd58f2c7c5c.ngrok-free.app';
-const NGROK_URL = 'http://localhost:10004';
+const NGROK_URL = 'https://00141d1c8415.ngrok-free.app';
 
 // =====================
 // 1. 페이지 로드 시 공통 알럿 자동 생성
@@ -63,27 +62,38 @@ async function sendPost(url, data = {}, options = {}) {
             method: options.method || 'POST',
             headers,
             body: JSON.stringify(data),
-            credentials: options.credentials || 'same-origin',
+            credentials: 'include',
         });
 
         const contentType = response.headers.get('content-type');
-        if (!contentType?.includes('application/json')) {
+        let responseData = null;
+
+        if (contentType?.includes('application/json')) {
+            responseData = await response.json();
+            return responseData;
+        } else {
             showAlert('서버에서 JSON 응답을 받지 못했습니다.');
-            return null;
+            return {
+                httpStatus : {
+                    value : response.status
+                },
+                success: false,
+                data: null,
+                exception: {
+                    code: 'NETWORK_ERROR_JSON_PARSING_ERROR',
+                    message: '서버에서 JSON 응답을 받지 못했습니다.'
+                }
+            };
         }
 
-        const responseData = await response.json();
-        console.log(responseData);
+        // HTTP 에러 처리
         if (!response.ok) {
-            showAlert(responseData?.exception?.message || '요청 실패');
-            return null;
+            showAlert(responseData?.message || '요청 실패');
         }
 
         return responseData;
 
     } catch (error) {
-        console.error('Request failed:', error);
-
         let message = '알 수 없는 오류가 발생했습니다.';
         if (error.name === 'TypeError' && error.message.includes('fetch')) {
             message = '네트워크 연결을 확인해주세요.';
@@ -94,6 +104,8 @@ async function sendPost(url, data = {}, options = {}) {
         }
 
         showAlert(message);
-        return null;
+
+        return { status: 0, data: null };
     }
 }
+

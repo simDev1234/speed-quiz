@@ -174,7 +174,11 @@ function updateCorrectChoice($radioButton) {
 
     // 선택된 선택지에만 is-correct 클래스 추가
     $radioButton.closest('.choice-wrapper').addClass('is-correct');
+
+    // 선택된 라디오 버튼에 체크 상태 적용
+    $radioButton.prop('checked', true);
 }
+
 
 // =====================
 // 정답 설정 (체크박스 방식, 새로 추가된 문제용)
@@ -229,7 +233,7 @@ function collectFormData() {
 
     $('.question-item').each(function() {
         const $questionItem = $(this);
-        const questionId = $questionItem.data('question-id') || null;
+        const questionId = $questionItem.data('question-id');
         const questionText = $questionItem.find('.question-input').val().trim();
 
         const choices = [];
@@ -355,7 +359,7 @@ async function handleFormSubmit(e) {
 
             // 성공 시 리다이렉트
             setTimeout(() => {
-                window.location.href = '/quiz/myquiz';
+                window.location.href = `/quiz/myquiz`;
             }, 1500);
         }
 

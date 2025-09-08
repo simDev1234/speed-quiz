@@ -26,4 +26,7 @@ public class UsersEntity extends BasicEntity {
     @Column(name = "nickname")
     private String nickname;
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }

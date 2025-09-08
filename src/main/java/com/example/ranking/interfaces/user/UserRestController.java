@@ -3,6 +3,7 @@ package com.example.ranking.interfaces.user;
 import com.example.ranking.application.user.UserLoginService;
 import com.example.ranking.application.user.UserService;
 import com.example.ranking.application.user.UserSignUpService;
+import com.example.ranking.domain.user.request.UserInfoUpdateRequest.UserPasswordReset;
 import com.example.ranking.global.exception.HttpApiResponse;
 import com.example.ranking.infra.auth.service.UserMailAuthService;
 import com.example.ranking.domain.user.request.UserLoginRequest;
@@ -38,7 +39,7 @@ public class UserRestController {
     @PostMapping("/email/auth")
     public HttpApiResponse<Void> sendEmailAuth(@RequestBody UserEmailAuthRequest userEmailAuthRequest) {
 
-        userMailAuthService.sendEmailAuthVerificationCode(userEmailAuthRequest.email());
+        userMailAuthService.sendEmailAuthVerificationCodeForUserNotExisting(userEmailAuthRequest.email());
 
         return HttpApiResponse.success();
     }
@@ -46,7 +47,7 @@ public class UserRestController {
     @PostMapping("/email/code")
     public HttpApiResponse<Void> verifyEmailCode(@RequestBody UserEmailVerificationRequest userEmailVerificationRequest) {
 
-        userMailAuthService.verifyEmailAuthCode(userEmailVerificationRequest.verificationCode());
+        userMailAuthService.verifyEmailAuthCode(userEmailVerificationRequest.email(), userEmailVerificationRequest.verificationCode());
 
         return HttpApiResponse.success();
     }
@@ -63,6 +64,31 @@ public class UserRestController {
     public HttpApiResponse<Void> logout(HttpServletRequest request, HttpServletResponse response) {
 
         userService.logout(request, response);
+
+        return HttpApiResponse.success();
+    }
+
+    @PostMapping("/password-reset/send-code")
+    public HttpApiResponse<Void> sendPasswordResetCode(@RequestBody UserEmailAuthRequest userEmailAuthRequest) {
+
+        userMailAuthService.sendEmailAuthVerificationCodeForUserExisting(userEmailAuthRequest.email());
+
+        return HttpApiResponse.success();
+
+    }
+
+    @PostMapping("/password-reset/verify-code")
+    public HttpApiResponse<Void> verifyPasswordResetCode(@RequestBody UserEmailVerificationRequest userEmailVerificationRequest) {
+
+        userMailAuthService.verifyEmailAuthCode(userEmailVerificationRequest.email(), userEmailVerificationRequest.verificationCode());
+
+        return HttpApiResponse.success();
+    }
+
+    @PostMapping("/password-reset/reset")
+    public HttpApiResponse<Void> resetPassword(@RequestBody UserPasswordReset userPasswordReset) {
+
+        userService.resetPassword(userPasswordReset);
 
         return HttpApiResponse.success();
     }
