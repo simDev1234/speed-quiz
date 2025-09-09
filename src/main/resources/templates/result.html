@@ -23,7 +23,20 @@
 
         <!-- 메인 콘텐츠 -->
         <div th:fragment="mainContent" class = "main-content">
-            <div class="quiz-container">
+            <div class="quiz-container" th:if="${results == null || results.questionResults == null || results.questionResults.isEmpty()}">
+                <div class="empty-icon">🎯</div>
+                <div class="empty-title">아직 풀어본 퀴즈가 없어요!</div>
+                <div class="empty-subtitle">
+                    다양한 주제의 퀴즈로 실력을 테스트해보세요.<br>
+                    지금 바로 시작하여 재미있게 학습할 수 있어요.
+                </div>
+                <div class="empty-actions">
+                    <a th:href="@{/}" class="action-btn secondary">
+                        📚 퀴즈 목록 보기
+                    </a>
+                </div>
+            </div>
+            <div class="quiz-container" th:if="${results.questionResults != null && !results.questionResults.isEmpty()}">
                 <!-- 결과 화면 -->
                 <div class="result-screen">
                     <div class="result-icon">🎉</div>

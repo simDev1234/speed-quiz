@@ -25,7 +25,10 @@ async function handleLoginSubmit(event) {
             setTimeout(() => {
                 window.location.href = '/';
             }, 100);
-        } else if (responseData?.httpStatus?.value === 401 || responseData?.httpStatus?.value === 403) {
+        } else if (responseData?.httpStatus?.value === 401
+            || responseData?.httpStatus?.value === 403
+            || responseData?.httpStatus?.value === 404
+        ) {
             showAlert(responseData?.exception?.message || '비밀번호를 확인해주세요');
             openPasswordResetModal();
         } else {

@@ -2,6 +2,8 @@ package com.example.ranking.infra.auth.service;
 
 import com.example.ranking.domain.user.User;
 import com.example.ranking.domain.user.UserAuthDetails;
+import com.example.ranking.global.exception.ErrorCode;
+import com.example.ranking.global.exception.QuizException;
 import com.example.ranking.infra.persistence.user.UsersEntity;
 import com.example.ranking.infra.persistence.user.jpa.UsersJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ public class FormUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found Exception"));
+                .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
 
         return new UserAuthDetails(
                 User.builder()

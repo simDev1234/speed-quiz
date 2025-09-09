@@ -70,7 +70,14 @@ public class DailyQuizReadService {
                 = quizAttemptHistoriesJpaRepository.findQuizAttemptHistoriesEntitiesByQuestionStatusAndUserAndQuestionTitle(QuestionStatus.ACTIVE , usersEntity, questionsTitlesEntity);
 
         if (latestUserQuizAttemptHistoryList.isEmpty()) {
-            throw new QuizException(ErrorCode.INTERNAL_SERVER_ERROR);
+            return PersonalQuizResult.builder()
+                    .questionTitleId(questionsTitlesEntity.getId())
+                    .finalScore(new BigDecimal(0))
+                    .finalAccuracyRate(new BigDecimal(0))
+                    .correctAnswerCounts(0)
+                    .totalQuestions(0)
+                    .questionResults(new ArrayList<>())
+                    .build();
         }
 
         List<QuizResult> questionResults = new ArrayList<>();
