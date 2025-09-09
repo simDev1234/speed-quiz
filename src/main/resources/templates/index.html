@@ -57,13 +57,40 @@
                 <div class="dashboard-card"
                      th:each="card : ${cardList}"
                      th:attr="data-subject-id=${card.subjectId}, data-title=${card.titleText()}">
-                    <div class="card-icon">🎯</div>
-                    <div class="card-title" th:text="${card.titleText()}">퀴즈 시작하기</div>
-                    <div class="card-description" th:text="${card.description()}">
-                        다양한 주제의 퀴즈로 지식을 테스트해보세요
+
+                    <!-- 카드 헤더 (아이콘 + 조회수) -->
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                        <div class="card-meta">
+                            <span class="participation-count" th:text="'참여수 ' + ${card.participationCount}">참여수 0</span>
+                        </div>
                     </div>
-                    <a th:href="@{/quiz(questionTitleId=${card.questionTitleId()})}" class="start-btn">시작하기</a>
-                    <a th:href="@{/quiz/result(questionTitleId=${card.questionTitleId()})}" class="result-btn">결과보기</a>
+
+                    <!-- 카드 콘텐츠 -->
+                    <div class="card-content">
+                        <div class="card-title" th:text="${card.titleText()}">퀴즈 시작하기</div>
+                        <div class="card-description" th:text="${card.description()}">
+                            다양한 주제의 퀴즈로 지식을 테스트해보세요
+                        </div>
+                    </div>
+
+                    <!-- 날짜 정보 -->
+                    <div class="card-dates">
+                        <div class="date-item">
+                            <span class="date-label">작성일</span>
+                            <span class="date-value" th:text="${#temporals.format(card.createdAt, 'yyyy.MM.dd')}">2024.01.15</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">수정일</span>
+                            <span class="date-value" th:text="${#temporals.format(card.updatedAt, 'yyyy.MM.dd')}">2024.01.20</span>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 영역 -->
+                    <div class="card-actions">
+                        <a th:href="@{/quiz(questionTitleId=${card.questionTitleId()})}" class="btn start-btn">시작하기</a>
+                        <a th:href="@{/quiz/result(questionTitleId=${card.questionTitleId()})}" class="btn result-btn">결과보기</a>
+                    </div>
                 </div>
             </div>
 

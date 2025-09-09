@@ -41,12 +41,9 @@ public class DailyQuizReadService {
     private final QuestionsJpaRepository questionsJpaRepository;
     private final QuizAttemptHistoriesJpaRepository quizAttemptHistoriesJpaRepository;
 
-    public List<QuestionTitle> findAllActiveQuestionTitles(String email) {
-
-        return questionsTitlesJpaRepository.findAllByStatusWithJoinFetch(QuestionTitleStatus.ACTIVE)
-                .stream()
-                .map(QuestionTitle::fromEntity)
-                .toList();
+    public List<QuestionTitle> findPopularActiveQuestionTitles() {
+        
+        return questionsTitlesJpaRepository.findAllQuestionTitlesWithParticipationCountOrderByParticipationCountDesc();
     }
 
     public List<Question> findAllActiveQuestionsByQuestionTitleId(Long questionTitleId) {

@@ -34,8 +34,23 @@ public abstract class QuizListResponse {
             Integer timeLimit,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
-            Boolean hasParticipationHistory
+            long participationCount
     ){
+
+        public static QuestionTitle fromEntity(QuestionsTitlesEntity questionsTitlesEntity, long participationCount){
+            return QuestionTitle.builder()
+                    .subjectId(questionsTitlesEntity.getSubjectsEntity().getId())
+                    .questionTitleId(questionsTitlesEntity.getId())
+                    .userId(questionsTitlesEntity.getUser().getId())
+                    .titleText(questionsTitlesEntity.getTitle())
+                    .description(questionsTitlesEntity.getDescription())
+                    .timeLimit(questionsTitlesEntity.getTimeLimit())
+                    .createdAt(questionsTitlesEntity.getCreatedAt())
+                    .updatedAt(questionsTitlesEntity.getUpdatedAt())
+                    .participationCount(participationCount)
+                    .build();
+        }
+
         public static QuestionTitle fromEntity(QuestionsTitlesEntity questionsTitlesEntity){
             return QuestionTitle.builder()
                     .subjectId(questionsTitlesEntity.getSubjectsEntity().getId())

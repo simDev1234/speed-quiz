@@ -4,6 +4,7 @@ import com.example.ranking.domain.quiz.response.QuizListResponse;
 import com.example.ranking.domain.quiz.response.QuizListResponse.QuestionTitle;
 import com.example.ranking.infra.persistence.quiz.QQuestionsTitlesEntity;
 import com.example.ranking.infra.persistence.quiz.QQuizAttemptHistoriesEntity;
+import com.example.ranking.infra.persistence.quiz.QSubjectsEntity;
 import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.QuestionTitleStatus;
 import com.example.ranking.infra.persistence.user.QUsersEntity;
 import com.example.ranking.infra.persistence.user.UsersEntity;
@@ -20,7 +21,9 @@ public class QuestionTitleQueryDslRepositoryImpl implements QuestionTitleQueryDs
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<QuestionTitle> findAllActiveQuestionTitlesWithParticipationHistory(UsersEntity currentLoggedInUser) {
+    public List<QuestionTitle> findAllQuestionTitlesWithParticipationCountOrderByParticipationCountDesc() {
+
+        QSubjectsEntity subject = QSubjectsEntity.subjectsEntity;
         QQuestionsTitlesEntity qt = QQuestionsTitlesEntity.questionsTitlesEntity;
         QQuizAttemptHistoriesEntity qah = QQuizAttemptHistoriesEntity.quizAttemptHistoriesEntity;
         QUsersEntity user = QUsersEntity.usersEntity;
@@ -28,21 +31,23 @@ public class QuestionTitleQueryDslRepositoryImpl implements QuestionTitleQueryDs
         return queryFactory
                 .select(Projections.constructor(
                         QuizListResponse.QuestionTitle.class,
-                        qt.id,
-                        user.id,
-                        qt.title,
-                        qt.description,
-                        qt.timeLimit,
-                        qt.createdAt,
-                        qt.updatedAt,
-                        qah.count().gt(0)
-                ))
+                            qt.subjectsEntity.id,
+                            qt.id,
+                            qt.user.id,
+                            qt.title,
+                            qt.description,
+                            qt.timeLimit,
+                            qt.createdAt,
+                            qt.updatedAt,
+                            qah.count()
+                    ))
                 .from(qt)
-                .leftJoin(qt.user, user)
+                .join(qt.subjectsEntity)
+                .join(qt.user)
                 .leftJoin(qt.quizAttemptHistories, qah)
-                .on(qt.user.eq(qah.user).and(qah.user.eq(currentLoggedInUser)))
                 .where(qt.status.eq(QuestionTitleStatus.ACTIVE))
-                .groupBy(qt.id, user.id, qt.title, qt.description, qt.timeLimit, qt.createdAt, qt.updatedAt)
+                .groupBy(qt.id)
+                .orderBy(qah.count().desc())
                 .fetch();
     }
 }
