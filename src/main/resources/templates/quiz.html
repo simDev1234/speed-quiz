@@ -61,6 +61,27 @@
         </div>
     </div>
     </div>
+
+    <!-- 퀴즈 완료 모달 -->
+    <div id="completionModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title">🎉 스피드 퀴즈를 잘 즐기셨나요? 🎉</h2>
+            <p class="modal-description">
+                빠른 속도로 진행되는 스피드 퀴즈는 집중력과 순발력을 기르는데 도움이 됩니다!<br>
+                더 많은 재미있는 퀴즈로 여러분을 기다리고 있어요.
+            </p>
+
+            <!-- 광고 영역 (나중에 실제 광고로 교체) -->
+            <div class="advertisement-area">
+                🚀 여기에 광고가 들어갈 예정입니다 🚀<br>
+                스피드 퀴즈 관련 상품이나 서비스 광고
+            </div>
+
+            <div class="countdown-display" id="countdownDisplay">5</div>
+            <button id="closeModalBtn" class="close-btn" onclick="closeModal()">닫기</button>
+        </div>
+    </div>
+
     <!-- 푸터 -->
     <div th:replace="fragments/footer ::footer"></div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

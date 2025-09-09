@@ -109,5 +109,12 @@
         width: 100%; /* 모바일에서는 꽉 차게 */
         font-size: 14px;
         padding: 12px 20px;
+        margin-bottom: 2px;
+    }
+
+    .result-btn {
+        width: 100%; /* 모바일에서는 꽉 차게 */
+        font-size: 14px;
+        padding: 12px 20px;
     }
 }

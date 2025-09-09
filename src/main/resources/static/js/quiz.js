@@ -1,3 +1,59 @@
+//-- 광고 모달 start--------------
+// 모달 관련 변수
+let modalCountdownInterval;
+
+// 모달 표시 함수
+function showCompletionModal(modalCountdown) {
+    return new Promise((resolve) => {
+        document.getElementById('completionModal').style.display = 'flex';
+        startModalCountdown(modalCountdown, resolve); // resolve를 콜백으로 전달
+    });
+}
+
+// 모달 카운트다운 시작
+function startModalCountdown(modalCountdown) {
+
+    updateCountdownDisplay(modalCountdown);
+
+    modalCountdownInterval = setInterval(() => {
+        modalCountdown--;
+        updateCountdownDisplay();
+
+        if (modalCountdown <= 0) {
+            clearInterval(modalCountdownInterval);
+            showCloseButton();
+        }
+    }, 1000);
+}
+
+// 카운트다운 표시 업데이트
+function updateCountdownDisplay(modalCountdown) {
+    const countdownElement = document.getElementById('countdownDisplay');
+    if (modalCountdown > 0) {
+        countdownElement.textContent = modalCountdown;
+        countdownElement.style.color = '#007bff';
+    } else {
+        countdownElement.textContent = '✨';
+        countdownElement.style.color = '#28a745';
+    }
+}
+
+// 닫기 버튼 표시
+function showCloseButton() {
+    document.getElementById('closeModalBtn').classList.add('show');
+}
+
+// 모달 닫기
+function closeModal() {
+    document.getElementById('completionModal').style.display = 'none';
+    // 결과 페이지로 이동
+    const questionTitleId = document.getElementById('infoNumber').textContent.replace(/\[|\]/g, '');
+    window.location.href = `${NGROK_URL}/quiz/result?questionTitleId=` + questionTitleId;
+}
+
+//-- 광고 모달 end --------------
+
+// 문제 문항 렌더링
 function renderQuestion() {
     if (!questions || questions.length === 0) {
         console.error('퀴즈 데이터가 없습니다.');
@@ -155,11 +211,9 @@ function submitFinalAnswers() {
             credentials: 'include',
         });
 
-        // 500ms 쉬기
-        new Promise(resolve => setTimeout(resolve, 500));
-
-        // 성공 후 이동
-        window.location.href = `${NGROK_URL}/quiz/result?questionTitleId=` + questionTitleId;
+        showCompletionModal(5).then(() => {
+            window.location.href = `${NGROK_URL}/quiz/result?questionTitleId=` + questionTitleId;
+        });
     } catch (error) {
         console.error('제출 실패:', error);
         alert('답안 제출 중 문제가 발생했습니다.');
