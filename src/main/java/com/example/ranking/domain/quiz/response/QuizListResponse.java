@@ -26,6 +26,7 @@ public abstract class QuizListResponse {
 
     @Builder
     public record QuestionTitle(
+            Long subjectId,
             Long questionTitleId,
             Long userId,
             String titleText,
@@ -37,6 +38,7 @@ public abstract class QuizListResponse {
     ){
         public static QuestionTitle fromEntity(QuestionsTitlesEntity questionsTitlesEntity){
             return QuestionTitle.builder()
+                    .subjectId(questionsTitlesEntity.getSubjectsEntity().getId())
                     .questionTitleId(questionsTitlesEntity.getId())
                     .userId(questionsTitlesEntity.getUser().getId())
                     .titleText(questionsTitlesEntity.getTitle())
@@ -47,18 +49,18 @@ public abstract class QuizListResponse {
                     .build();
         }
 
-        public QuestionTitle(Long questionTitleId, Long userId, String titleText,
-                             String description, Integer timeLimit, LocalDateTime createdAt,
-                             LocalDateTime updatedAt, Boolean hasParticipationHistory) {
-            this.questionTitleId = questionTitleId;
-            this.userId = userId;
-            this.titleText = titleText;
-            this.description = description;
-            this.timeLimit = timeLimit;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
-            this.hasParticipationHistory = hasParticipationHistory;
-        }
+//        public QuestionTitle(Long questionTitleId, Long userId, String titleText,
+//                             String description, Integer timeLimit, LocalDateTime createdAt,
+//                             LocalDateTime updatedAt, Boolean hasParticipationHistory) {
+//            this.questionTitleId = questionTitleId;
+//            this.userId = userId;
+//            this.titleText = titleText;
+//            this.description = description;
+//            this.timeLimit = timeLimit;
+//            this.createdAt = createdAt;
+//            this.updatedAt = updatedAt;
+//            this.hasParticipationHistory = hasParticipationHistory;
+//        }
 
     }
 

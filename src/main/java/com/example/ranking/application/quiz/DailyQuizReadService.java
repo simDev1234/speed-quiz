@@ -43,7 +43,7 @@ public class DailyQuizReadService {
 
     public List<QuestionTitle> findAllActiveQuestionTitles(String email) {
 
-        return questionsTitlesJpaRepository.findAllByStatus(QuestionTitleStatus.ACTIVE)
+        return questionsTitlesJpaRepository.findAllByStatusWithJoinFetch(QuestionTitleStatus.ACTIVE)
                 .stream()
                 .map(QuestionTitle::fromEntity)
                 .toList();

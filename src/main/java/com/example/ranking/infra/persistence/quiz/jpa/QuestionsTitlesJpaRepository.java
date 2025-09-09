@@ -1,6 +1,5 @@
 package com.example.ranking.infra.persistence.quiz.jpa;
 
-import com.example.ranking.domain.quiz.response.QuizListResponse;
 import com.example.ranking.infra.persistence.quiz.QuestionsTitlesEntity;
 import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.QuestionTitleStatus;
 import com.example.ranking.infra.persistence.user.UsersEntity;
@@ -12,7 +11,10 @@ import java.util.Optional;
 
 public interface QuestionsTitlesJpaRepository extends JpaRepository<QuestionsTitlesEntity, Long>, QuestionTitleQueryDslRepository {
 
-    List<QuestionsTitlesEntity> findAllByStatus(QuestionTitleStatus status);
+    @Query( "SELECT qt FROM QuestionsTitlesEntity qt " +
+            "JOIN FETCH qt.subjectsEntity s " +
+            "WHERE qt.status = :status")
+    List<QuestionsTitlesEntity> findAllByStatusWithJoinFetch(@Param("status") QuestionTitleStatus status);
 
     List<QuestionsTitlesEntity> findAllByStatusAndUser(QuestionTitleStatus status, UsersEntity user);
 

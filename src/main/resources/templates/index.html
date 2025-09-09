@@ -6,40 +6,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>퀴즈 게임 - 메인</title>
-    <link rel = "stylesheet" th:href ="@{/css/common.css}">
-    <link rel = "stylesheet" th:href ="@{/css/header.css}">
-    <link rel = "stylesheet" th:href ="@{/css/footer.css}">
-    <link rel = "stylesheet" th:href ="@{/css/sidebar.css}">
-    <link rel = "stylesheet" th:href ="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
     <!-- 헤더 -->
     <div th:replace="fragments/header ::header"></div>
+
+    <!-- 컨테이너 (사이드바 + 메인 콘텐츠) -->
     <div class="container">
+
         <!-- 사이드바 -->
-        <div th:replace="fragments/sidebar ::sidebar">
-            <div th:replace="fragments/title :: title"></div>
-        </div>
+        <div th:replace="fragments/sidebar ::sidebar"></div>
 
         <!-- 메인 콘텐츠 -->
-        <div th:fragment="mainContent" class = "main-content">
-            <div class="dashboard-grid">
-                <div class="dashboard-card" th:each="card : ${cardList}">
+        <div class="main-content" th:fragment="mainContent">
+
+            <!-- 검색 및 필터 섹션 -->
+            <div class="search-filter-section">
+                <div class="search-filter-container">
+                    <div class="search-box">
+                        <input type="text"
+                               id="searchInput"
+                               class="search-input"
+                               placeholder="퀴즈 제목을 검색하세요...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+
+                    <div class="filter-box">
+                        <label class="form-label" for="subjectFilter" style="display: none">과목</label>
+                        <select id="subjectFilter" class="filter-select">
+                            <option value="" selected>전체</option>
+                            <option th:each="subject : ${subjects}"
+                                    th:value="${subject.subjectId}"
+                                    th:text="${subject.subjectName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <button id="clearFilters" class="clear-filters-btn">초기화</button>
+                </div>
+            </div>
+
+            <!-- 퀴즈 카드 그리드 (검색창 밖으로 분리) -->
+            <div class="dashboard-grid" id="dashboardGrid">
+                <div class="dashboard-card"
+                     th:each="card : ${cardList}"
+                     th:attr="data-subject-id=${card.subjectId}, data-title=${card.titleText()}">
                     <div class="card-icon">🎯</div>
                     <div class="card-title" th:text="${card.titleText()}">퀴즈 시작하기</div>
-                    <div class="card-description" th:text="${card.description()}">다양한 주제의 퀴즈로 지식을 테스트해보세요</div>
+                    <div class="card-description" th:text="${card.description()}">
+                        다양한 주제의 퀴즈로 지식을 테스트해보세요
+                    </div>
                     <a th:href="@{/quiz(questionTitleId=${card.questionTitleId()})}" class="start-btn">시작하기</a>
-                    <a th:href="@{/quiz/result(questionTitleId=${card.questionTitleId()})} "
-                       class="result-btn">결과보기</a>
+                    <a th:href="@{/quiz/result(questionTitleId=${card.questionTitleId()})}" class="result-btn">결과보기</a>
                 </div>
+            </div>
+
+            <!-- 검색 결과 없음 메시지 -->
+            <div id="noResults" class="no-results" style="display: none;">
+                검색 조건에 맞는 퀴즈가 없습니다.
             </div>
         </div>
     </div>
+
     <!-- 푸터 -->
     <div th:replace="fragments/footer ::footer"></div>
+
+    <!-- 스크립트 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/sidebar.js}"></script>
+    <script>
+        $(document).ready(function() {
+            const $searchInput = $('#searchInput');
+            const $subjectFilter = $('#subjectFilter');
+            const $clearFilters = $('#clearFilters');
+            const $dashboardGrid = $('#dashboardGrid');
+            const $noResults = $('#noResults');
 
+            function filterQuizzes() {
+                const searchTerm = $searchInput.val().toLowerCase().trim();
+                const selectedSubject = $subjectFilter.val(); // subjectId 값
+                let visibleCount = 0;
+
+                $('.dashboard-card').each(function() {
+                    const $card = $(this);
+                    const title = $card.attr('data-title')?.toLowerCase() || '';
+                    const subjectId = $card.attr('data-subject-id') || '';
+
+                    const matchesSearch = !searchTerm || title.includes(searchTerm);
+                    const matchesSubject = !selectedSubject || subjectId === selectedSubject;
+
+                    if (matchesSearch && matchesSubject) {
+                        $card.show();
+                        visibleCount++;
+                    } else {
+                        $card.hide();
+                    }
+                });
+
+                if (visibleCount === 0) {
+                    $noResults.show();
+                } else {
+                    $noResults.hide();
+                }
+            }
+
+            $searchInput.on('input', filterQuizzes);
+            $subjectFilter.on('change', filterQuizzes);
+            $clearFilters.on('click', function() {
+                $searchInput.val('');
+                $subjectFilter.val('');
+                filterQuizzes();
+            });
+            $searchInput.on('keypress', function(e) {
+                if (e.which === 13) e.preventDefault();
+            });
+        });
+    </script>
 </body>
 </html>

@@ -77,6 +77,94 @@
     box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
 }
 
+/* 검색 및 필터 섹션 */
+.search-filter-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px; /* 카드와의 간격 확보 */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-filter-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap; /* 작은 화면에서는 자동 줄바꿈 */
+}
+
+.filter-box {
+    min-width: 180px;
+    flex-shrink: 0;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e6ed;
+    border-radius: 25px;
+    font-size: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+    min-width: 220px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 15px;
+    border: 2px solid #e0e6ed;
+    border-radius: 25px;
+    font-size: 16px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #667eea;
+    font-size: 18px;
+}
+
+.clear-filters-btn {
+    padding: 12px 20px;
+    border: 2px solid #667eea;
+    border-radius: 25px;
+    background: white;
+    color: #667eea;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.clear-filters-btn:hover {
+    background: #667eea;
+    color: white;
+}
+
 /* 모바일 최적화 */
 @media (max-width: 768px) {
     .dashboard-grid {
@@ -116,5 +204,22 @@
         width: 100%; /* 모바일에서는 꽉 차게 */
         font-size: 14px;
         padding: 12px 20px;
+    }
+
+    /*  검색창 및 필터  */
+    .search-filter-container {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .filter-box, .search-box {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .clear-filters-btn {
+        width: 100%;
+        text-align: center;
     }
 }

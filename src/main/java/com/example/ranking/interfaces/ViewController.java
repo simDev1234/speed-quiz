@@ -30,6 +30,7 @@ public class ViewController {
 
         model.addAttribute("isLoggedIn", true);
         model.addAttribute("nickname", ((UserAuthDetails) userDetails).user().nickname());
+        model.addAttribute("subjects", dailyQuizReadService.findAllSubjects());
         model.addAttribute("cardList", dailyQuizReadService.findAllActiveQuestionTitles(userDetails.getUsername()));
 
         return "index";
