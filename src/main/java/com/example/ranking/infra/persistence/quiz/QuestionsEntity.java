@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.example.ranking.infra.persistence.quiz.type.QuizEntityTypes.*;
 
@@ -42,10 +44,10 @@ public class QuestionsEntity extends BasicEntity {
     private QuestionStatus status;
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ChoicesEntity> choices;
+    private List<ChoicesEntity> choices = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<QuizAttemptHistoriesEntity> quizAttemptHistories;
+    private List<QuizAttemptHistoriesEntity> quizAttemptHistories = new ArrayList<>();
 
     public void changeQuestionsEntityColumns(SubjectsEntity subjectsEntity,
                                              QuestionsTitlesEntity questionsTitlesEntity,
@@ -55,4 +57,7 @@ public class QuestionsEntity extends BasicEntity {
         this.questionText = question.questionText();
     }
 
+    public void deactivate() {
+        this.status = QuestionStatus.DELETED;
+    }
 }

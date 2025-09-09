@@ -40,5 +40,4 @@ public class ChoicesEntity extends BasicEntity {
         this.isCorrect = choice.isCorrect();
 
     }
-
 }

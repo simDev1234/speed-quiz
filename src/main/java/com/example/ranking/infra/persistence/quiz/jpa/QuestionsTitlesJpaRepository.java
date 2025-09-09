@@ -22,7 +22,8 @@ public interface QuestionsTitlesJpaRepository extends JpaRepository<QuestionsTit
             "JOIN FETCH qt.user u " +
             "JOIN FETCH qt.questions q " +
             "WHERE qt.id =  :questionTitleId " +
-            "AND qt.user = :user")
-    Optional<QuestionsTitlesEntity> findByIdAndUserWithJoinFetch(@Param("questionTitleId") Long questionTitleId,
-                                                                 @Param("user") UsersEntity usersEntity);
+            "AND qt.user = :user " +
+            "AND q.status = 'ACTIVE'")
+    Optional<QuestionsTitlesEntity> findByIdAndUserAndStatusWithJoinFetch(@Param("questionTitleId") Long questionTitleId,
+                                                                          @Param("user") UsersEntity usersEntity);
 }
