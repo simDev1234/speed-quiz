@@ -126,6 +126,7 @@ public class DailyQuizWriteService {
         ChoicesEntity choicesEntity;
         if (choicesEntitiesFromDatabaseMap.containsKey(choice.choiceId())) {
             choicesEntity = choicesEntitiesFromDatabaseMap.get(choice.choiceId());
+            choicesEntity.changePrevChoicesEntityColumnsByChoice(subjectsEntity, questionsEntity, choice);
         } else {
             choicesEntity = ChoicesEntity.builder()
                     .subject(subjectsEntity)
