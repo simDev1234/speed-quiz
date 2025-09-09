@@ -134,7 +134,7 @@ public class DailyQuizReadService {
         UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
                 .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
 
-        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.findByIdAndUserAndStatusWithJoinFetch(questionTitleId, usersEntity)
+        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.findByIdAndUserWithJoinFetchWhereStatusIsActive(questionTitleId, usersEntity)
                 .orElseThrow(() -> new QuizException(ErrorCode.QUESTION_TITLE_NOT_FOUND));
 
         return QuizDetail.fromEntity(questionsTitlesEntity);

@@ -59,7 +59,7 @@ public class DailyQuizWriteService {
                 .orElseThrow(() -> new QuizException(ErrorCode.QUIZ_SUBJECT_NOT_FOUND));
 
         // 기존 문제 메타정보 수정
-        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.findByIdAndUserAndStatusWithJoinFetch(questionTitleId, usersEntity)
+        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.findByIdAndUserWithJoinFetchWhereStatusIsActive(questionTitleId, usersEntity)
                 .orElseThrow(() -> new QuizException(ErrorCode.QUESTION_TITLE_NOT_FOUND));
         questionsTitlesEntity.changeQuestionsEntityColumns(subjectsEntity, quizEdit);
 
@@ -194,4 +194,16 @@ public class DailyQuizWriteService {
         }
     }
 
+    @Transactional
+    public void deleteQuiz(Long questionTitleId, String email) {
+
+        UsersEntity usersEntity = usersJpaRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new QuizException(ErrorCode.USER_NOT_FOUND));
+
+        QuestionsTitlesEntity questionsTitlesEntity = questionsTitlesJpaRepository.findByIdAndUserWithJoinFetchWhereStatusIsActive(questionTitleId, usersEntity)
+                .orElseThrow(() -> new QuizException(ErrorCode.QUESTION_TITLE_NOT_FOUND));
+        questionsTitlesEntity.deactivate();
+        questionsTitlesEntity.getQuestions().forEach(QuestionsEntity::deactivate);
+
+    }
 }

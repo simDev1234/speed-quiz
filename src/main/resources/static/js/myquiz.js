@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    let deleteQuizId = null;
+    window.deleteQuizId = null;
 
     // CSRF 토큰 설정
     const csrfToken = $('meta[name="_csrf"]').attr('content');
@@ -69,7 +69,7 @@ function confirmDelete() {
     if (!deleteQuizId) return;
 
     $.ajax({
-        url: `/api/quiz/${deleteQuizId}`,
+        url: `/api/v1/quiz/${deleteQuizId}`,
         type: 'DELETE',
         success: function(response) {
             showAlert('퀴즈가 성공적으로 삭제되었습니다.', 2000);

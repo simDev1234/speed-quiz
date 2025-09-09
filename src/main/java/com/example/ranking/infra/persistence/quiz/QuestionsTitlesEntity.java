@@ -57,4 +57,7 @@ public class QuestionsTitlesEntity extends BasicEntity {
         this.timeLimit = quizEdit.timeLimit();
     }
 
+    public void deactivate() {
+        this.status = QuestionTitleStatus.DELETED;
+    }
 }

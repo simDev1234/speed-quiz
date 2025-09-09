@@ -11,12 +11,6 @@ import java.util.Optional;
 
 public interface QuestionsTitlesJpaRepository extends JpaRepository<QuestionsTitlesEntity, Long>, QuestionTitleQueryDslRepository {
 
-//    @Query( "SELECT qt " +
-//            "FROM QuestionsTitlesEntity qt " +
-//            "JOIN FETCH qt.subjectsEntity s " +
-//            "WHERE qt.status = :status")
-//    List<QuestionsTitlesEntity> findAllByStatusWithJoinFetch(@Param("status") QuestionTitleStatus status);
-
     List<QuestionsTitlesEntity> findAllByStatusAndUser(QuestionTitleStatus status, UsersEntity user);
 
     @Query( "SELECT qt FROM QuestionsTitlesEntity qt " +
@@ -25,6 +19,6 @@ public interface QuestionsTitlesJpaRepository extends JpaRepository<QuestionsTit
             "WHERE qt.id =  :questionTitleId " +
             "AND qt.user = :user " +
             "AND q.status = 'ACTIVE'")
-    Optional<QuestionsTitlesEntity> findByIdAndUserAndStatusWithJoinFetch(@Param("questionTitleId") Long questionTitleId,
-                                                                          @Param("user") UsersEntity usersEntity);
+    Optional<QuestionsTitlesEntity> findByIdAndUserWithJoinFetchWhereStatusIsActive(@Param("questionTitleId") Long questionTitleId,
+                                                                                    @Param("user") UsersEntity usersEntity);
 }

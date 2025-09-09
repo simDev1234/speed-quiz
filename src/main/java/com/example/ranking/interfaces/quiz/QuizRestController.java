@@ -50,4 +50,11 @@ public class QuizRestController {
         return HttpApiResponse.success();
     }
 
+    @DeleteMapping("/{questionTitleId}")
+    public HttpApiResponse<Void> deleteQuiz(@AuthenticationPrincipal UserDetails userDetails,
+                                            @PathVariable Long questionTitleId) {
+        dailyQuizWriteService.deleteQuiz(questionTitleId, userDetails.getUsername());
+        return HttpApiResponse.success();
+    }
+
 }
