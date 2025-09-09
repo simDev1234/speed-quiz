@@ -28,13 +28,6 @@
             <!-- 검색 및 필터 섹션 -->
             <div class="search-filter-section">
                 <div class="search-filter-container">
-                    <div class="search-box">
-                        <input type="text"
-                               id="searchInput"
-                               class="search-input"
-                               placeholder="퀴즈 제목을 검색하세요...">
-                        <span class="search-icon">🔍</span>
-                    </div>
 
                     <div class="filter-box">
                         <label class="form-label" for="subjectFilter" style="display: none">과목</label>
@@ -45,6 +38,14 @@
                                     th:text="${subject.subjectName}">
                             </option>
                         </select>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text"
+                               id="searchInput"
+                               class="search-input"
+                               placeholder="퀴즈 제목을 검색하세요...">
+                        <span class="search-icon">🔍</span>
                     </div>
 
                     <button id="clearFilters" class="clear-filters-btn">초기화</button>
