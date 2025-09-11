@@ -7,7 +7,7 @@ async function sendVerificationCode(event) {
         return;
     }
 
-    await sendPost(`${NGROK_URL}/api/v1/users/email/auth`, { email });
+    await sendPost(`${URL}/api/v1/users/email/auth`, { email });
     document.getElementById('verificationSection')?.style?.setProperty('display', 'block');
     document.getElementById('sendCodeBtn')?.style?.setProperty('display', 'none');
     verifiedEmail = email;
@@ -23,7 +23,7 @@ async function verifyCode(event) {
         return;
     }
 
-    const responseData = await sendPost(`${NGROK_URL}/api/v1/users/email/code`, {
+    const responseData = await sendPost(`${URL}/api/v1/users/email/code`, {
         email,
         verificationCode: inputCode
     });

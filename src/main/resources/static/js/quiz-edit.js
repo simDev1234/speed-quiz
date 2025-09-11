@@ -345,12 +345,12 @@ async function handleFormSubmit(e) {
 
         if (isEditMode && formData.questionTitleId) {
             // 수정 모드
-            result = await sendPost(`${NGROK_URL}/api/v1/quiz/${formData.questionTitleId}`, formData, {
+            result = await sendPost(`${URL}/api/v1/quiz/${formData.questionTitleId}`, formData, {
                 method: 'PUT'
             });
         } else {
             // 생성 모드
-            result = await sendPost(`${NGROK_URL}/api/v1/quiz`, formData);
+            result = await sendPost(`${URL}/api/v1/quiz`, formData);
         }
 
         if (result) {

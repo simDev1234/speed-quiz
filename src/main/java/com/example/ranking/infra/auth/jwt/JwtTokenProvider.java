@@ -56,13 +56,22 @@ public class JwtTokenProvider {
         JwtAccessToken jwtAccessToken = createJwtAccessToken(userId, email,nickname);
 
         Cookie cookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, jwtAccessToken.content());
+        cookie.setDomain("simdev1234.site");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge((int) (accessTokenExpirationMilliSeconds / 1000)); // seconds
 
-        response.addCookie(cookie);
+        StringBuilder cookieHeader = new StringBuilder();
+        cookieHeader.append(cookie.getName()).append("=").append(cookie.getValue())
+                .append("; Max-Age=").append(cookie.getMaxAge())
+                .append("; Path=").append(cookie.getPath())
+                .append("; HttpOnly")
+                .append("; SameSite=").append("Lax");
+        response.addHeader("Set-Cookie", cookieHeader.toString());
 
+        response.addCookie(cookie);
+        log.info("Cookie added to response");
     }
 
     // 토큰 생성
@@ -77,6 +86,8 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
+        log.info("JwtTokenProvider.createJwtAccessToken -> accessTokenString :: {}", accessTokenString);
+
         return JwtAccessToken.from(authType, accessTokenString, currentDate, expirationDate);
     }
 
@@ -90,7 +101,7 @@ public class JwtTokenProvider {
         return claims;
     }
 
-    // 토큰 유출 
+    // 토큰 유출
     public Optional<String> extractJwtAccessTokenStringFromCookie(HttpServletRequest request) {
 
         try {
@@ -103,6 +114,8 @@ public class JwtTokenProvider {
                     .findFirst()
                     .orElse(null);
 
+            log.info("JwtTokenProvider.extractJwtAccessTokenStringFromCookie -> cookie :: {}", cookie);
+
             return Objects.nonNull(cookie) ? Optional.of(cookie.getValue()) : Optional.empty();
         } catch (Exception e) {
             log.info("JwtTokenProvider.extractJwtAccessTokenStringFromCookie :: ", e);
@@ -110,7 +123,7 @@ public class JwtTokenProvider {
         }
 
     }
-    
+
     // 토큰 유효성 조회
     public boolean isValidAccessToken(String jwtAccessTokenString){
 
@@ -152,7 +165,7 @@ public class JwtTokenProvider {
     private void removeAccessTokenCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie(ACCESS_TOKEN_COOKIE_NAME, null);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(0); // 0초 => 즉시 만료
         response.addCookie(cookie);

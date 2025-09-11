@@ -4,6 +4,7 @@
 const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
 const csrfToken = $('meta[name="_csrf"]').attr('content');
 const NGROK_URL = 'https://00141d1c8415.ngrok-free.app';
+const URL = 'http://www.simdev1234.site';
 
 // =====================
 // 1. 페이지 로드 시 공통 알럿 자동 생성
@@ -54,7 +55,7 @@ async function sendPost(url, data = {}, options = {}) {
         'Accept': 'application/json',
         ...(csrfHeader && csrfToken ? { [csrfHeader]: csrfToken } : {}),
         ...options.headers,
-        "ngrok-skip-browser-warning": "true"
+        // "ngrok-skip-browser-warning": "true"
     };
 
     try {
@@ -114,13 +115,13 @@ async function sendPost(url, data = {}, options = {}) {
 // =====================
 async function logout() {
 
-    fetch(`${NGROK_URL}/api/v1/users/logout`, {
+    fetch(`${URL}/api/v1/users/logout`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             [csrfHeader]: csrfToken,
-            "ngrok-skip-browser-warning": "true"
+            // "ngrok-skip-browser-warning": "true"
         },
         credentials: 'include'
     })

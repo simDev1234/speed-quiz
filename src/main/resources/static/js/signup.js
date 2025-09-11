@@ -14,7 +14,7 @@ async function completeSignup(event) {
         password,
         nickname
     };
-    const responseData = await sendPost(`${NGROK_URL}/api/v1/users/signup`, requestData, { credentials: 'include' });
+    const responseData = await sendPost(`${URL}/api/v1/users/signup`, requestData, { credentials: 'include' });
 
     if (responseData?.success) {
         // 회원가입 성공 시 다음 단계

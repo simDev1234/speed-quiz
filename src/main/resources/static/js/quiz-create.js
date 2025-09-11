@@ -181,7 +181,7 @@ document.getElementById('quizCreateForm').addEventListener('submit', async funct
         }
     }
 
-    const result = await sendPost(`${NGROK_URL}/api/v1/quiz`, formData);
+    const result = await sendPost(`${URL}/api/v1/quiz`, formData);
 
     if (result) {
         showAlert('퀴즈가 성공적으로 저장되었습니다!');

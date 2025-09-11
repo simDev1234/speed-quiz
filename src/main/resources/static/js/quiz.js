@@ -48,7 +48,7 @@ function closeModal() {
     document.getElementById('completionModal').style.display = 'none';
     // 결과 페이지로 이동
     const questionTitleId = document.getElementById('infoNumber').textContent.replace(/\[|\]/g, '');
-    window.location.href = `${NGROK_URL}/quiz/result?questionTitleId=` + questionTitleId;
+    window.location.href = `${URL}/quiz/result?questionTitleId=` + questionTitleId;
 }
 
 //-- 광고 모달 end --------------
@@ -207,12 +207,12 @@ function submitFinalAnswers() {
     const questionTitleId = document.getElementById('infoNumber').textContent.replace(/\[|\]/g, '');
 
     try {
-        const responseData = sendPost(`${NGROK_URL}/api/v1/quiz/submit`, userAnswers, {
+        const responseData = sendPost(`${URL}/api/v1/quiz/submit`, userAnswers, {
             credentials: 'include',
         });
 
         showCompletionModal(5).then(() => {
-            window.location.href = `${NGROK_URL}/quiz/result?questionTitleId=` + questionTitleId;
+            window.location.href = `${URL}/quiz/result?questionTitleId=` + questionTitleId;
         });
     } catch (error) {
         console.error('제출 실패:', error);

@@ -18,18 +18,15 @@ async function handleLoginSubmit(event) {
     };
 
     try {
-        const responseData = await sendPost(`${NGROK_URL}/api/v1/users/login`, requestData);
+        const responseData = await sendPost(`${URL}/api/v1/users/login`, requestData, {credentials: 'include'});
 
         if (responseData?.success) {
             // 로그인 성공 시 페이지 리디렉션 전에 잠시 대기
             setTimeout(() => {
                 window.location.href = '/';
-            }, 100);
-        } else if (responseData?.httpStatus?.value === 401
-            || responseData?.httpStatus?.value === 403
-            || responseData?.httpStatus?.value === 404
-        ) {
-            showAlert(responseData?.exception?.message || '비밀번호를 확인해주세요');
+            }, 1000);
+        } else if (responseData?.exception.code === 'LOGIN_FAILED'){
+            //showAlert(responseData?.exception?.message || '비밀번호를 확인해주세요');
             openPasswordResetModal();
         } else {
             showAlert(responseData?.exception?.message || '로그인에 실패했습니다.');
@@ -105,7 +102,7 @@ async function sendPasswordResetEmail(event) {
         sendBtn.textContent = '발송 중...';
 
         const requestData = { email: email };
-        const responseData = await sendPost(`${NGROK_URL}/api/v1/users/password-reset/send-code`, requestData);
+        const responseData = await sendPost(`${URL}/api/v1/users/password-reset/send-code`, requestData);
 
         if (responseData?.success) {
             resetEmail = email;
@@ -145,7 +142,7 @@ async function verifyResetCode(event) {
             email: resetEmail,
             verificationCode: code
         };
-        const responseData = await sendPost(`${NGROK_URL}/api/v1/users/password-reset/verify-code`, requestData);
+        const responseData = await sendPost(`${URL}/api/v1/users/password-reset/verify-code`, requestData);
 
         if (responseData?.exception.message) {
             showResetStep(3);
@@ -166,7 +163,7 @@ async function resendResetCode() {
         const requestData = {
             email: resetEmail
         };
-        const responseData = await sendPost(`${NGROK_URL}/api/v1/users/password-reset/send-code`, requestData);
+        const responseData = await sendPost(`${URL}/api/v1/users/password-reset/send-code`, requestData);
 
         if (responseData?.exception.message) {
             showAlert('인증 코드가 재발송되었습니다.');
@@ -257,7 +254,7 @@ async function resetPassword(event) {
             email: resetEmail,
             newPassword: newPassword
         };
-        const responseData = await sendPost(`${NGROK_URL}/api/v1/users/password-reset/reset`, requestData);
+        const responseData = await sendPost(`${URL}/api/v1/users/password-reset/reset`, requestData);
 
         if (responseData?.exception.message) {
             showResetStep(4);

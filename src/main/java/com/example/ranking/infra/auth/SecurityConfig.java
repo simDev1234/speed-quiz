@@ -108,6 +108,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
+                "http://www.simdev1234.site",
+                "http://simdev1234.site",
+                "simdev1234.site",
                 "http://localhost:10004",
                 "https://00141d1c8415.ngrok-free.app"
         ));
